@@ -53,6 +53,33 @@ Default values:
 - Cooling restriction geometry: 40 holes of 9 mm by 9 mm
 - Default airflow tolerance or design band: plus or minus 10 percent
 
+Permanent push/pull fan reference for future machines:
+
+- Fan code: 5132928300 - IRT/4-450 230/400V50Hz 560/160 VE
+- Nominal frequency: 50 Hz
+- Future ramp allowance: up to 60 Hz when extra capacity is needed
+- Theoretical point: 3000 m3/h at 900 Pa static pressure, 20 degrees C, 1.2 kg/m3 air density
+- Workpoint: 2979 m3/h, 888 Pa static pressure, 889 Pa total pressure
+- Input power: 1.85 kW per fan
+- Outlet velocity: 1.7 m/s
+- Fan speed: 1380 rpm
+- Specific fan power: 2.24 W/l/s
+- Diameter: 793 mm
+- Fan size: 450
+- Weight: 87.58 kg
+- Motor: 4 poles, 3-230/400V-50Hz, max current 7.4 A / 4.2 A, IP54, insulation class F
+
+The fan curve must be captured before the tool can determine the VFD setting accurately. The tool should eventually use curve data for airflow versus static pressure, input power, and RPM. The single workpoint above is only a default reference point.
+
+VFD setting requirement:
+
+- Determine the required fan frequency from the required airflow and static pressure.
+- Use captured fan-curve values where available.
+- Use fan affinity laws only as an interim estimate between known curve points.
+- Nominal operation is 50 Hz.
+- Allow ramping to 60 Hz for extra capacity, with a clear warning when the design depends on operation above 50 Hz.
+- Show the estimated VFD setting in Hz and the resulting estimated airflow, pressure, power, and RPM.
+
 The 50 degrees C limit is measured at the cooling air outlet after the magnetron. The tool should treat this as a hard warning limit.
 
 At 50 degrees C or above, the tool should show a hard fail state for magnetron outlet temperature.
@@ -87,6 +114,7 @@ Inputs:
 - Desired deltaP per inlet relative to ambient
 - Temperature per inlet
 - Airflow per inlet, if known
+- Power per inlet fan
 - Duct system connected to each inlet
 
 Rules and warnings:
@@ -336,6 +364,7 @@ Later versions may include:
 
 ## Open Questions
 
+- Which fan-curve points should be entered manually first for the IRT/4-450 fan: airflow/static pressure only, or airflow/static pressure/power/RPM together?
 - What safety margin should extraction airflow have above total inflow?
 - Should pressure drop calculations use a simplified method first, or should they immediately use catalogue/product data?
 - Should fan behavior be modeled from the measured 50 Pa / 50 m3/h operating point, or entered as a simple editable airflow value for the first version?

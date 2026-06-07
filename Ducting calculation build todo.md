@@ -71,6 +71,7 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Add number of push inlets.
 - [x] Add airflow per push inlet.
 - [x] Add power per push inlet fan.
+- [x] Set permanent push/pull fan defaults from IRT/4-450 datasheet.
 - [x] Add outlet fan power default for the later extraction section.
 - [x] Add temperature per push inlet.
 - [x] Add desired deltaP per inlet relative to ambient.
@@ -91,6 +92,10 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [ ] Add number of extraction fans.
 - [ ] Add airflow per extraction fan.
 - [ ] Add power per extraction fan.
+- [ ] Use permanent IRT/4-450 fan defaults for extraction fan airflow and power.
+- [ ] Add fan-curve data entry for IRT/4-450 airflow versus static pressure.
+- [ ] Add VFD frequency estimate from required airflow and static pressure.
+- [ ] Warn when required operation exceeds 50 Hz and depends on ramping toward 60 Hz.
 - [ ] Add fan grouping field or selector.
 - [ ] Add control mode: humidity based, temperature based, or fixed.
 - [ ] Calculate total extraction airflow.
