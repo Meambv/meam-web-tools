@@ -183,11 +183,12 @@ The first extraction area will probably be drier than later extraction areas.
 Ducting should be entered separately for each functional section:
 
 - Push ducting
-- Cavity-connected ducting
 - Extraction ducting
 - Future heat recovery or condenser ducting
 
 Each duct system should support a list of line segments.
+
+The funnel/waveguide microwave-filter holes are not a duct segment list. If their pressure loss is included in the tool, it should be modeled as a separate restriction input using the total hole geometry and measured pressure loss.
 
 Per segment inputs:
 
