@@ -333,6 +333,14 @@ h2 {
   grid-template-columns: minmax(178px, 1fr);
 }
 
+.text-control {
+  grid-template-columns: minmax(260px, 1fr);
+}
+
+.wide-form-row {
+  grid-column: 1 / -1;
+}
+
 .input-control input:focus,
 .input-control select:focus {
   outline: none;

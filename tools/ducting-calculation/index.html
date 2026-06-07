@@ -115,6 +115,56 @@
         </form>
       </section>
 
+      <section class="panel" aria-labelledby="process-fan-title">
+        <div class="panel-header compact">
+          <h2 id="process-fan-title">Process Fan Data</h2>
+          <span class="panel-state">Chosen fan</span>
+        </div>
+        <form class="defaults-form" data-process-fan-form>
+          <label class="input-row wide-form-row">
+            <span>Fan model</span>
+            <span class="input-control text-control">
+              <input data-default-input="processFanModel" type="text" value="IRT/4-450 230/400V50Hz 560/160 VE" />
+            </span>
+          </label>
+          <label class="input-row">
+            <span>Workpoint airflow</span>
+            <span class="input-control">
+              <input data-default-input="processFanWorkpointAirflowM3h" type="number" step="1" min="0" value="2979" />
+              <small>m3/h</small>
+            </span>
+          </label>
+          <label class="input-row">
+            <span>Static pressure</span>
+            <span class="input-control">
+              <input data-default-input="processFanStaticPressurePa" type="number" step="1" min="0" value="888" />
+              <small>Pa</small>
+            </span>
+          </label>
+          <label class="input-row">
+            <span>Input power</span>
+            <span class="input-control">
+              <input data-default-input="processFanInputPowerKw" type="number" step="0.01" min="0" value="1.85" />
+              <small>kW/fan</small>
+            </span>
+          </label>
+          <label class="input-row">
+            <span>Nominal frequency</span>
+            <span class="input-control">
+              <input data-default-input="processFanFrequencyHz" type="number" step="1" min="0" value="50" />
+              <small>Hz</small>
+            </span>
+          </label>
+          <label class="input-row">
+            <span>Ramp limit</span>
+            <span class="input-control">
+              <input data-default-input="processFanMaxFrequencyHz" type="number" step="1" min="0" value="60" />
+              <small>Hz</small>
+            </span>
+          </label>
+        </form>
+      </section>
+
       <section class="panel panel-large" aria-labelledby="magnetron-title">
         <div class="panel-header compact">
           <h2 id="magnetron-title">Magnetron Cooling Core</h2>
@@ -279,14 +329,14 @@
             <label class="input-row">
               <span>Airflow per inlet</span>
               <span class="input-control">
-                <input data-default-input="pushAirflowPerInletM3h" type="number" step="1" min="0" value="2979" />
+                <input data-default-input="pushAirflowPerInletM3h" data-process-fan-derived="airflow" type="number" step="1" min="0" value="2979" />
                 <small>m3/h</small>
               </span>
             </label>
             <label class="input-row">
               <span>Power per inlet fan</span>
               <span class="input-control">
-                <input data-default-input="pushInletFanPowerW" type="number" step="0.1" min="0" value="1850" />
+                <input data-default-input="pushInletFanPowerW" data-process-fan-derived="power" type="number" step="0.1" min="0" value="1850" />
                 <small>W/fan</small>
               </span>
             </label>

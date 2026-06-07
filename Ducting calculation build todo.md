@@ -73,6 +73,8 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Add power per push inlet fan.
 - [x] Set permanent push/pull fan defaults from IRT/4-450 datasheet.
 - [x] Add outlet fan power default for the later extraction section.
+- [x] Add separate process fan data form for the chosen push/pull fan.
+- [x] Let process fan airflow and power update push/extraction defaults.
 - [x] Add temperature per push inlet.
 - [x] Add desired deltaP per inlet relative to ambient.
 - [x] Warn if pressure after push inlets goes above ambient.

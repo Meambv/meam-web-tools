@@ -24,6 +24,15 @@ export function updateDefaultValue(key, value) {
   notifySubscribers();
 }
 
+export function updateDefaultValues(patch) {
+  sharedState.defaults = {
+    ...sharedState.defaults,
+    ...patch
+  };
+  updateCalculatedState();
+  notifySubscribers();
+}
+
 export function resetDefaults() {
   sharedState.defaults = { ...DEFAULTS };
   updateCalculatedState();

@@ -1,5 +1,5 @@
 import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js";
-import { resetDefaults, sharedState, subscribeToSharedState, updateDefaultValue, updateSharedState } from "./sharedState.js";
+import { resetDefaults, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js";
 
 const REDIRECT_DELAY_MS = 1200;
 
@@ -149,7 +149,27 @@ function formatNumber(value, key = "") {
 function bindDefaultInputs() {
   elements.defaultInputs.forEach((input) => {
     input.addEventListener("input", () => {
-      updateDefaultValue(input.dataset.defaultInput, parseInputValue(input));
+      const key = input.dataset.defaultInput;
+      const value = parseInputValue(input);
+
+      if (key === "processFanWorkpointAirflowM3h") {
+        updateDefaultValues({
+          processFanWorkpointAirflowM3h: value,
+          pushAirflowPerInletM3h: value
+        });
+        return;
+      }
+
+      if (key === "processFanInputPowerKw") {
+        updateDefaultValues({
+          processFanInputPowerKw: value,
+          pushInletFanPowerW: value * 1000,
+          extractionFanPowerW: value * 1000
+        });
+        return;
+      }
+
+      updateDefaultValue(key, value);
     });
   });
 
