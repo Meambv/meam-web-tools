@@ -1,5 +1,5 @@
-import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=push-rows";
-import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=push-rows";
+import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=phase7-extraction";
+import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=phase7-extraction";
 
 const REDIRECT_DELAY_MS = 1200;
 
@@ -30,7 +30,13 @@ const elements = {
   cavityWarnings: document.querySelector("[data-cavity-warnings]"),
   cavityPressureRow: document.querySelector("[data-cavity-pressure-row]"),
   openingAreaRow: document.querySelector("[data-opening-area-row]"),
-  flowDeltaRow: document.querySelector("[data-flow-delta-row]")
+  flowDeltaRow: document.querySelector("[data-flow-delta-row]"),
+  extractionOutputs: document.querySelectorAll("[data-extraction-output]"),
+  extractionStatusLine: document.querySelector("[data-extraction-status-line]"),
+  extractionStatus: document.querySelector("[data-extraction-status]"),
+  extractionWarnings: document.querySelector("[data-extraction-warnings]"),
+  extractionMarginRow: document.querySelector("[data-extraction-margin-row]"),
+  extractionFrequencyRow: document.querySelector("[data-extraction-frequency-row]")
 };
 
 const COOLING_STATUS_TEXT = Object.freeze({
@@ -147,6 +153,24 @@ function renderCavityBalance(state) {
   renderWarningList(elements.cavityWarnings, state.cavityBalance.warnings);
 }
 
+function renderExtractionControl(state) {
+  elements.extractionOutputs.forEach((output) => {
+    const key = output.dataset.extractionOutput;
+    const value = state.extractionControl[key];
+
+    if (value !== undefined) {
+      output.textContent = formatNumber(value, key);
+    }
+  });
+
+  elements.extractionStatus.textContent = SIMPLE_STATUS_TEXT[state.extractionControl.status];
+  elements.extractionStatusLine.classList.remove("neutral", "pass", "warning", "fail");
+  elements.extractionStatusLine.classList.add(state.extractionControl.status);
+  elements.extractionMarginRow.classList.toggle("over-target", state.extractionControl.extractionCapacityMarginM3h < 0);
+  elements.extractionFrequencyRow.classList.toggle("over-target", state.extractionControl.indicativeExtractionFrequencyHz > state.defaults.processFanFrequencyHz);
+  renderWarningList(elements.extractionWarnings, state.extractionControl.warnings);
+}
+
 function renderCoolingWarnings(warnings) {
   renderWarningList(elements.coolingWarnings, warnings);
 }
@@ -171,6 +195,10 @@ function formatNumber(value, key = "") {
     return value.toFixed(1);
   }
 
+  if (key.toLowerCase().includes("factor")) {
+    return value.toFixed(2);
+  }
+
   if (key.endsWith("M2") || key.endsWith("M3") || key.endsWith("Ms") || key.endsWith("Hz")) {
     return new Intl.NumberFormat("en-US", {
       maximumFractionDigits: 2
@@ -191,7 +219,16 @@ function bindDefaultInputs() {
       if (key === "processFanWorkpointAirflowM3h") {
         updateDefaultValues({
           processFanWorkpointAirflowM3h: value,
-          pushAirflowPerInletM3h: value
+          pushAirflowPerInletM3h: value,
+          extractionAirflowPerFanM3h: value
+        });
+        return;
+      }
+
+      if (key === "processFanStaticPressurePa") {
+        updateDefaultValues({
+          processFanStaticPressurePa: value,
+          extractionStaticPressurePa: value
         });
         return;
       }
@@ -258,6 +295,7 @@ function initializeApp() {
   subscribeToSharedState(renderMagnetronCooling);
   subscribeToSharedState(renderPushInlets);
   subscribeToSharedState(renderCavityBalance);
+  subscribeToSharedState(renderExtractionControl);
   bindDefaultInputs();
   bindStorageButtons();
 

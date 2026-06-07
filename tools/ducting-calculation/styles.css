@@ -212,7 +212,17 @@ h2 {
 
 .results-panel {
   grid-column: 4;
-  grid-row: 1 / 4;
+  grid-row: 1;
+  align-self: start;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.extraction-panel {
+  grid-column: 4;
+  grid-row: 2 / 4;
+  max-height: 663px;
+  overflow: auto;
 }
 
 .panel-header {
@@ -396,6 +406,13 @@ h2 {
 .split-grid {
   display: grid;
   grid-template-columns: minmax(270px, 0.9fr) minmax(300px, 1fr);
+  gap: 6px;
+  padding: 6px;
+}
+
+.extraction-grid {
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 6px;
   padding: 6px;
 }

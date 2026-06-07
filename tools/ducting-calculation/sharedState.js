@@ -1,5 +1,5 @@
-import { DEFAULTS } from "./constants.js?v=push-rows";
-import { calculateCavityBalance, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=push-rows";
+import { DEFAULTS } from "./constants.js?v=phase7-extraction";
+import { calculateCavityBalance, calculateExtractionControl, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=phase7-extraction";
 
 const subscribers = new Set();
 const STORAGE_KEYS = Object.freeze({
@@ -12,7 +12,8 @@ export const sharedState = {
   defaults: { ...DEFAULTS },
   magnetronCooling: calculateMagnetronCooling(DEFAULTS),
   pushInlets: calculatePushInlets(DEFAULTS),
-  cavityBalance: calculateCavityBalance(DEFAULTS, calculateMagnetronCooling(DEFAULTS), calculatePushInlets(DEFAULTS))
+  cavityBalance: calculateCavityBalance(DEFAULTS, calculateMagnetronCooling(DEFAULTS), calculatePushInlets(DEFAULTS)),
+  extractionControl: calculateExtractionControl(DEFAULTS, calculateCavityBalance(DEFAULTS, calculateMagnetronCooling(DEFAULTS), calculatePushInlets(DEFAULTS)))
 };
 
 export function updateSharedState(patch) {
@@ -89,6 +90,7 @@ function updateCalculatedState() {
   sharedState.magnetronCooling = calculateMagnetronCooling(sharedState.defaults);
   sharedState.pushInlets = calculatePushInlets(sharedState.defaults);
   sharedState.cavityBalance = calculateCavityBalance(sharedState.defaults, sharedState.magnetronCooling, sharedState.pushInlets);
+  sharedState.extractionControl = calculateExtractionControl(sharedState.defaults, sharedState.cavityBalance);
 }
 
 function getProcessFanState() {
@@ -105,10 +107,12 @@ function getProcessFanState() {
 function getDerivedFanDefaults(fanState) {
   const inputPowerKw = Number(fanState.processFanInputPowerKw);
   const airflowM3h = Number(fanState.processFanWorkpointAirflowM3h);
+  const staticPressurePa = Number(fanState.processFanStaticPressurePa);
 
   return {
     ...fanState,
-    ...(Number.isFinite(airflowM3h) ? { pushAirflowPerInletM3h: airflowM3h } : {}),
+    ...(Number.isFinite(airflowM3h) ? { pushAirflowPerInletM3h: airflowM3h, extractionAirflowPerFanM3h: airflowM3h } : {}),
+    ...(Number.isFinite(staticPressurePa) ? { extractionStaticPressurePa: staticPressurePa } : {}),
     ...(Number.isFinite(inputPowerKw) ? {
       pushInletFanPowerW: inputPowerKw * 1000,
       extractionFanPowerW: inputPowerKw * 1000

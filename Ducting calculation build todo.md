@@ -95,34 +95,34 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 ## Phase 7: Extraction Fan Section
 
-- [ ] Treat extraction as downstream control, not as a simple fan total.
-- [ ] Add number of extraction fans.
-- [ ] Add airflow per extraction fan.
-- [ ] Add power per extraction fan.
-- [ ] Use permanent IRT/4-450 fan defaults for extraction fan airflow and power.
+- [x] Treat extraction as downstream control, not as a simple fan total.
+- [x] Add number of extraction fans.
+- [x] Add airflow per extraction fan.
+- [x] Add power per extraction fan.
+- [x] Use permanent IRT/4-450 fan defaults for extraction fan airflow and power.
 - [ ] Add fan-curve data entry for IRT/4-450 airflow versus static pressure.
 - [x] Add metric fan library JSON with IRT/4-450 50 Hz curve data.
-- [ ] Add VFD frequency estimate from required airflow and static pressure.
+- [x] Add VFD frequency estimate from required airflow and static pressure.
 - [x] Add indicative inlet VFD estimate rows before final extraction control.
 - [x] Use process fan curve at push inlet deltaP for 50 Hz inlet flow estimate.
-- [ ] Warn when required operation exceeds 50 Hz and depends on ramping toward 60 Hz.
+- [x] Warn when required operation exceeds 50 Hz and depends on ramping toward 60 Hz.
 - [x] Mark VFD estimates as indicative because real fan speed is PLC PID controlled.
 - [x] Use PLC pressure target range of about -2 to -10 Pa.
-- [ ] Add extraction temperature input for extraction control.
-- [ ] Add editable absolute moisture weight input for extraction control, for example g water/kg dry air.
-- [ ] Calculate relative humidity from absolute moisture weight, temperature, and air pressure.
-- [ ] Calculate humid-air volume increase from absolute moisture weight, temperature, pressure, and dry-air flow.
-- [ ] Show dry-airflow target, calculated relative humidity, and corrected wet-air volume flow separately.
+- [x] Add extraction temperature input for extraction control.
+- [x] Add editable absolute moisture weight input for extraction control, for example g water/kg dry air.
+- [x] Calculate relative humidity from absolute moisture weight, temperature, and air pressure.
+- [x] Calculate humid-air volume increase from absolute moisture weight, temperature, pressure, and dry-air flow.
+- [x] Show dry-airflow target, calculated relative humidity, and corrected wet-air volume flow separately.
 - [ ] Add cavity pressure target and serial airflow target as extraction control inputs.
-- [ ] Warn if extraction pull is too low for negative pressure, humidity removal, or magnetron temperature control.
-- [ ] Warn if extraction pull is too high and likely reduces useful convection/residence behavior.
-- [ ] Warn if moisture/temperature expansion makes extraction fan capacity or VFD estimate insufficient.
-- [ ] Add fan grouping field or selector.
-- [ ] Add control mode: humidity based, temperature based, or fixed.
-- [ ] Calculate total extraction airflow.
+- [x] Warn if extraction pull is too low for negative pressure, humidity removal, or magnetron temperature control.
+- [x] Warn if extraction pull is too high and likely reduces useful convection/residence behavior.
+- [x] Warn if moisture/temperature expansion makes extraction fan capacity or VFD estimate insufficient.
+- [x] Add fan grouping field or selector.
+- [x] Add control mode: humidity based, temperature based, or fixed.
+- [x] Calculate total extraction airflow.
 - [ ] Compare extraction airflow against serial cavity airflow and pressure target.
-- [ ] Show extraction control margin or shortage.
-- [ ] Keep extraction margin editable or clearly undefined until the model is chosen.
+- [x] Show extraction control margin or shortage.
+- [x] Keep extraction margin editable or clearly undefined until the model is chosen.
 
 ## Phase 8: First Results Summary
 

@@ -520,9 +520,9 @@
             <span>Push inlets</span>
             <strong data-push-status>Not calculated</strong>
           </div>
-          <div class="status-line neutral">
+          <div class="status-line neutral" data-extraction-status-line>
             <span>Extraction balance</span>
-            <strong>Not calculated</strong>
+            <strong data-extraction-status>Not calculated</strong>
           </div>
         </div>
         <p class="panel-note">
@@ -532,10 +532,133 @@
         <ul class="warning-list" data-cooling-warnings></ul>
         <ul class="warning-list" data-push-warnings></ul>
         <ul class="warning-list" data-cavity-warnings></ul>
+        <ul class="warning-list" data-extraction-warnings></ul>
       </aside>
+
+      <section class="panel extraction-panel" aria-labelledby="extraction-title">
+        <div class="panel-header compact">
+          <h2 id="extraction-title">Extraction Control</h2>
+          <span class="panel-state">Phase 7</span>
+        </div>
+        <div class="extraction-grid">
+          <form class="defaults-form" data-extraction-form>
+            <label class="input-row">
+              <span>Extraction fans</span>
+              <span class="input-control">
+                <input data-default-input="extractionFanCount" type="number" step="1" min="0" value="3" />
+                <small>pcs</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Fan data flow @ ref P</span>
+              <span class="input-control">
+                <input data-default-input="extractionAirflowPerFanM3h" type="number" step="1" min="0" value="2979" />
+                <small>m3/h</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Fan data power @ ref P</span>
+              <span class="input-control">
+                <input data-default-input="extractionFanPowerW" type="number" step="0.1" min="0" value="1850" />
+                <small>W/fan</small>
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>Fan static pressure</span>
+              <span class="input-control">
+                <input data-default-input="extractionStaticPressurePa" type="number" step="1" min="0" value="888" />
+                <small>Pa</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Fan grouping</span>
+              <span class="input-control text-control">
+                <input data-default-input="extractionFanGroupLabel" type="text" value="All extraction fans" />
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>Control mode</span>
+              <span class="input-control mode-control">
+                <select data-default-input="extractionControlMode">
+                  <option value="humidityTemperature">Humidity + temperature</option>
+                  <option value="humidity">Humidity based</option>
+                  <option value="temperature">Temperature based</option>
+                  <option value="fixed">Fixed airflow</option>
+                </select>
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>Extraction temperature</span>
+              <span class="input-control">
+                <input data-default-input="extractionTemperatureC" type="number" step="0.1" value="45" />
+                <small>degrees C</small>
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>Absolute moisture</span>
+              <span class="input-control">
+                <input data-default-input="extractionAbsoluteMoistureGKg" type="number" step="1" min="0" value="80" />
+                <small>g/kg</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Air pressure</span>
+              <span class="input-control">
+                <input data-default-input="extractionAirPressurePa" type="number" step="100" min="1" value="101325" />
+                <small>Pa</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Control margin</span>
+              <span class="input-control">
+                <input data-default-input="extractionControlMarginPercent" type="number" step="1" min="0" value="10" />
+                <small>%</small>
+              </span>
+            </label>
+          </form>
+          <div class="section-stack" aria-label="Extraction control results">
+            <div class="section-row estimate-row">
+              <strong>Dry-air target *</strong>
+              <span><output data-extraction-output="dryAirflowTargetM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Calculated relative humidity *</strong>
+              <span><output data-extraction-output="calculatedRelativeHumidityPercent">0</output>%</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Humid-air volume factor *</strong>
+              <span><output data-extraction-output="humidAirVolumeFactor">0</output>x</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Corrected wet-air volume *</strong>
+              <span><output data-extraction-output="correctedWetAirVolumeFlowM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Required wet flow per fan *</strong>
+              <span><output data-extraction-output="requiredWetFlowPerFanM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>50 Hz fan capacity *</strong>
+              <span><output data-extraction-output="totalExtractionCapacityAt50HzM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row estimate-row" data-extraction-frequency-row>
+              <strong>Indicative extraction VFD *</strong>
+              <span><output data-extraction-output="indicativeExtractionFrequencyHz">0</output> Hz</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Indicative fan power *</strong>
+              <span><output data-extraction-output="indicativeExtractionFanPowerKw">0</output> kW</span>
+            </div>
+            <div class="section-row estimate-row" data-extraction-margin-row>
+              <strong>50 Hz capacity margin *</strong>
+              <span><output data-extraction-output="extractionCapacityMarginM3h">0</output> m3/h</span>
+            </div>
+          </div>
+        </div>
+      </section>
     </section>
   </main>
 
-  <script type="module" src="./app.js?v=push-rows"></script>
+  <script type="module" src="./app.js?v=phase7-extraction"></script>
 </body>
 </html>

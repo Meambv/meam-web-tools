@@ -1,6 +1,10 @@
-import { getDefaultFanForRole } from "./fanLibrary.js?v=push-rows";
+import { getDefaultFanForRole } from "./fanLibrary.js?v=phase7-extraction";
 
 const SECONDS_PER_HOUR = 3600;
+const STANDARD_AIR_TEMPERATURE_K = 293.15;
+const STANDARD_AIR_PRESSURE_PA = 101325;
+const DRY_AIR_WATER_RATIO = 0.62198;
+const WATER_VAPOR_VOLUME_RATIO = 1.607858;
 export function calculateMagnetronCooling(defaults) {
   const magnetronCount = positiveNumber(defaults.magnetronCount);
   const fansPerMagnetron = positiveNumber(defaults.fansPerMagnetron);
@@ -280,8 +284,125 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
   };
 }
 
+export function calculateExtractionControl(defaults, cavityBalance) {
+  const processFan = getDefaultFanForRole("extraction");
+  const extractionFanCount = positiveNumber(defaults.extractionFanCount);
+  const extractionAirflowPerFanM3h = positiveNumber(defaults.extractionAirflowPerFanM3h);
+  const extractionFanPowerW = positiveNumber(defaults.extractionFanPowerW);
+  const extractionStaticPressurePa = positiveNumber(defaults.extractionStaticPressurePa);
+  const extractionTemperatureC = numberOrZero(defaults.extractionTemperatureC);
+  const extractionAbsoluteMoistureGKg = positiveNumber(defaults.extractionAbsoluteMoistureGKg);
+  const extractionAirPressurePa = positiveNumber(defaults.extractionAirPressurePa) || STANDARD_AIR_PRESSURE_PA;
+  const extractionControlMarginPercent = positiveNumber(defaults.extractionControlMarginPercent);
+  const serialCavityAirflowM3h = positiveNumber(cavityBalance.serialCavityAirflowM3h);
+  const dryAirflowTargetM3h = serialCavityAirflowM3h * (1 + extractionControlMarginPercent / 100);
+  const humidityRatioKgKg = extractionAbsoluteMoistureGKg / 1000;
+  const vaporPressurePa = calculateVaporPressure(humidityRatioKgKg, extractionAirPressurePa);
+  const saturationVaporPressurePa = calculateSaturationVaporPressure(extractionTemperatureC);
+  const calculatedRelativeHumidityPercent = saturationVaporPressurePa > 0
+    ? (vaporPressurePa / saturationVaporPressurePa) * 100
+    : 0;
+  const humidAirVolumeFactor = calculateHumidAirVolumeFactor({
+    temperatureC: extractionTemperatureC,
+    humidityRatioKgKg,
+    pressurePa: extractionAirPressurePa
+  });
+  const correctedWetAirVolumeFlowM3h = dryAirflowTargetM3h * humidAirVolumeFactor;
+  const requiredWetFlowPerFanM3h = extractionFanCount > 0 ? correctedWetAirVolumeFlowM3h / extractionFanCount : 0;
+  const curveFlowPerFanAt50HzM3h = getFlowAtPressure(processFan.staticPressureCurve50Hz, extractionStaticPressurePa);
+  const totalExtractionCapacityAt50HzM3h = extractionFanCount * curveFlowPerFanAt50HzM3h;
+  const processFanFrequencyHz = positiveNumber(defaults.processFanFrequencyHz);
+  const processFanMaxFrequencyHz = positiveNumber(defaults.processFanMaxFrequencyHz);
+  const indicativeExtractionFrequencyHz = curveFlowPerFanAt50HzM3h > 0 && processFanFrequencyHz > 0
+    ? processFanFrequencyHz * (requiredWetFlowPerFanM3h / curveFlowPerFanAt50HzM3h)
+    : 0;
+  const indicativeExtractionFrequencyRatio = processFanFrequencyHz > 0 ? indicativeExtractionFrequencyHz / processFanFrequencyHz : 0;
+  const indicativeExtractionFanPowerKw = (extractionFanCount * extractionFanPowerW / 1000) * Math.pow(indicativeExtractionFrequencyRatio, 3);
+  const extractionCapacityMarginM3h = totalExtractionCapacityAt50HzM3h - correctedWetAirVolumeFlowM3h;
+  const extractionCapacityMarginPercent = correctedWetAirVolumeFlowM3h > 0
+    ? (extractionCapacityMarginM3h / correctedWetAirVolumeFlowM3h) * 100
+    : 0;
+  const warnings = [];
+
+  if (extractionFanCount <= 0) {
+    warnings.push({ level: "fail", message: "Enter at least one extraction fan." });
+  }
+
+  if (serialCavityAirflowM3h <= 0) {
+    warnings.push({ level: "warning", message: "Serial cavity airflow is not available for extraction control." });
+  }
+
+  if (calculatedRelativeHumidityPercent > 100) {
+    warnings.push({ level: "warning", message: "Calculated relative humidity is above 100 percent; condensation or wet-air assumptions need review." });
+  }
+
+  if (extractionControlMarginPercent > 25) {
+    warnings.push({ level: "warning", message: "Extraction margin is high and may reduce useful cavity convection/residence behavior." });
+  }
+
+  if (extractionCapacityMarginM3h < 0) {
+    warnings.push({ level: "fail", message: "Corrected humid-air extraction demand is above estimated 50 Hz fan capacity." });
+  }
+
+  if (indicativeExtractionFrequencyHz > processFanFrequencyHz && indicativeExtractionFrequencyHz <= processFanMaxFrequencyHz) {
+    warnings.push({ level: "warning", message: "Indicative extraction VFD setting is above nominal 50 Hz." });
+  }
+
+  if (processFanMaxFrequencyHz > 0 && indicativeExtractionFrequencyHz > processFanMaxFrequencyHz) {
+    warnings.push({ level: "fail", message: "Indicative extraction VFD setting is above the configured 60 Hz ramp limit." });
+  }
+
+  return {
+    extractionFanCount,
+    extractionAirflowPerFanM3h,
+    extractionFanPowerW,
+    extractionStaticPressurePa,
+    extractionTemperatureC,
+    extractionAbsoluteMoistureGKg,
+    extractionAirPressurePa,
+    extractionControlMarginPercent,
+    serialCavityAirflowM3h,
+    dryAirflowTargetM3h,
+    calculatedRelativeHumidityPercent,
+    humidAirVolumeFactor,
+    correctedWetAirVolumeFlowM3h,
+    requiredWetFlowPerFanM3h,
+    curveFlowPerFanAt50HzM3h,
+    totalExtractionCapacityAt50HzM3h,
+    indicativeExtractionFrequencyHz,
+    indicativeExtractionFanPowerKw,
+    extractionCapacityMarginM3h,
+    extractionCapacityMarginPercent,
+    status: getCoolingStatus(warnings),
+    warnings
+  };
+}
+
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
+}
+
+function calculateVaporPressure(humidityRatioKgKg, pressurePa) {
+  if (humidityRatioKgKg <= 0 || pressurePa <= 0) {
+    return 0;
+  }
+
+  return (humidityRatioKgKg * pressurePa) / (DRY_AIR_WATER_RATIO + humidityRatioKgKg);
+}
+
+function calculateSaturationVaporPressure(temperatureC) {
+  return 610.94 * Math.exp((17.625 * temperatureC) / (temperatureC + 243.04));
+}
+
+function calculateHumidAirVolumeFactor({ temperatureC, humidityRatioKgKg, pressurePa }) {
+  if (pressurePa <= 0) {
+    return 0;
+  }
+
+  const temperatureK = temperatureC + 273.15;
+  return (temperatureK / STANDARD_AIR_TEMPERATURE_K)
+    * (1 + WATER_VAPOR_VOLUME_RATIO * humidityRatioKgKg)
+    * (STANDARD_AIR_PRESSURE_PA / pressurePa);
 }
 
 function getFlowAtPressure(curvePoints, pressurePa) {
