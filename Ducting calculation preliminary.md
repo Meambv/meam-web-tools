@@ -245,6 +245,8 @@ Rules and warnings:
 
 The extraction fans are positioned after the cavity and pull air out of the process. They may pull harder or softer depending on humidity and temperature.
 
+Because extraction sizing is likely the key late client question, the Extraction Control section should have a wide layout below the main magnetron/cavity panels instead of being squeezed into the status column. The result should make it clear whether the existing push/pull fans are enough or whether a final additional pull fan is needed for winter heat recovery operation.
+
 Inputs:
 
 - Number of extraction fans

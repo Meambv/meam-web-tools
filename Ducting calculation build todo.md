@@ -95,6 +95,7 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 ## Phase 7: Extraction Fan Section
 
+- [x] Place Extraction Control below the main Phase 4/6 panels so the key extraction sizing problem has enough width.
 - [x] Treat extraction as downstream control, not as a simple fan total.
 - [x] Add number of extraction fans.
 - [x] Add airflow per extraction fan.
