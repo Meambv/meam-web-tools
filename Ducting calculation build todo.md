@@ -131,23 +131,23 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 ## Phase 8: First Results Summary
 
-- [ ] Show total push inlet airflow.
-- [ ] Show total magnetron cooling airflow.
-- [ ] Show serial cavity airflow.
-- [ ] Show total extraction airflow.
-- [ ] Show extraction control margin or shortage.
-- [ ] Show magnetron outlet temperature status.
-- [ ] Show cavity pressure status.
-- [ ] Show overall pass, warning, or fail state.
+- [x] Show total push inlet airflow.
+- [x] Show total magnetron cooling airflow.
+- [x] Show serial cavity airflow.
+- [x] Show total extraction airflow.
+- [x] Show extraction control margin or shortage.
+- [x] Show magnetron outlet temperature status.
+- [x] Show cavity pressure status.
+- [x] Show overall pass, warning, or fail state.
 
 ## Phase 9: Verification Before More Features
 
-- [ ] Test default values at 1920 x 1080.
-- [ ] Verify no text overlaps.
-- [ ] Verify hard fail at 50 degrees C or higher.
-- [ ] Verify warnings for weak extraction.
-- [ ] Verify all edited inputs update results immediately.
-- [ ] Verify access redirect still works.
+- [x] Test default values at 1920 x 1080.
+- [x] Verify no text overlaps.
+- [x] Verify hard fail at 50 degrees C or higher.
+- [x] Verify warnings for weak extraction.
+- [x] Verify all edited inputs update results immediately.
+- [x] Verify access redirect still works.
 
 ## Phase 10: Duct Segment Builder Later
 
@@ -203,4 +203,6 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Implement Phase 4 calculation mode switch.
 - [x] Implement Phase 5 push inlet section.
 - [x] Implement Phase 6 cavity balance section.
-- [ ] Implement Phase 7 extraction fan section.
+- [x] Implement Phase 7 extraction fan section.
+- [x] Implement Phase 8 first results summary.
+- [x] Complete Phase 9 verification before more features.
