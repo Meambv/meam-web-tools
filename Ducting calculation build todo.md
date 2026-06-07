@@ -101,7 +101,7 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [ ] Add power per extraction fan.
 - [ ] Use permanent IRT/4-450 fan defaults for extraction fan airflow and power.
 - [ ] Add fan-curve data entry for IRT/4-450 airflow versus static pressure.
-- [x] Add metric fan library with IRT/4-450 50 Hz curve data.
+- [x] Add metric fan library JSON with IRT/4-450 50 Hz curve data.
 - [ ] Add VFD frequency estimate from required airflow and static pressure.
 - [x] Add indicative inlet VFD estimate rows before final extraction control.
 - [ ] Warn when required operation exceeds 50 Hz and depends on ramping toward 60 Hz.

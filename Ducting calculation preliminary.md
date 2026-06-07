@@ -71,6 +71,8 @@ Permanent push/pull fan reference for future machines:
 
 The fan curve must be captured before the tool can determine the VFD setting accurately. The tool should eventually use curve data for airflow versus static pressure, input power, and RPM. The single workpoint above is only a default reference point.
 
+The editable fan data source is stored as metric JSON in `tools/ducting-calculation/fanLibrary.json`. It includes the magnetron cooling fan measured points and the IRT/4-450 50 Hz static-pressure curve, including 10000 m3/h at 0 Pa.
+
 The tool should expose the chosen process fan in a separate fan data form. The IRT/4-450 data should be prefilled, but changing that form should allow a future fan to be entered. The process fan form should update the default push inlet airflow and push/extraction fan power values, while those section-specific values remain editable.
 
 VFD setting requirement:
