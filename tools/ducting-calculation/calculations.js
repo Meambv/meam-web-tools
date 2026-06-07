@@ -1,4 +1,4 @@
-import { getDefaultFanForRole } from "./fanLibrary.js?v=push-curve";
+import { getDefaultFanForRole } from "./fanLibrary.js?v=push-clarity";
 
 const SECONDS_PER_HOUR = 3600;
 export function calculateMagnetronCooling(defaults) {
@@ -142,10 +142,11 @@ export function calculatePushInlets(defaults) {
   const pushInletFanPowerW = positiveNumber(defaults.pushInletFanPowerW);
   const pushInletTemperatureC = numberOrZero(defaults.pushInletTemperatureC);
   const pushInletDeltaPPa = numberOrZero(defaults.pushInletDeltaPPa);
+  const processFanStaticPressurePa = positiveNumber(defaults.processFanStaticPressurePa);
   const curvePressurePa = Math.abs(pushInletDeltaPPa);
   const curveFlowPerInletAt50HzM3h = getFlowAtPressure(processFan.staticPressureCurve50Hz, curvePressurePa);
   const totalCurvePushAirflowAt50HzM3h = pushInletCount * curveFlowPerInletAt50HzM3h;
-  const totalPushAirflowM3h = pushInletCount * pushAirflowPerInletM3h;
+  const totalFanDataAirflowM3h = pushInletCount * pushAirflowPerInletM3h;
   const totalPushFanPowerKw = (pushInletCount * pushInletFanPowerW) / 1000;
   const warnings = [];
 
@@ -171,10 +172,12 @@ export function calculatePushInlets(defaults) {
     pushInletFanPowerW,
     pushInletTemperatureC,
     pushInletDeltaPPa,
+    processFanStaticPressurePa,
     curvePressurePa,
     curveFlowPerInletAt50HzM3h,
     totalCurvePushAirflowAt50HzM3h,
-    totalPushAirflowM3h,
+    totalPushAirflowM3h: totalFanDataAirflowM3h,
+    totalFanDataAirflowM3h,
     totalPushFanPowerKw,
     status: warnings.length > 0 ? "warning" : "pass",
     warnings
@@ -193,8 +196,6 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
   const magnetronAirOpeningAreaM2 = magnetronAirOpeningLengthM * magnetronAirOpeningWidthM;
   const magnetronAirflowM3h = positiveNumber(magnetronCooling.activeTotalAirflowM3h);
   const pushAirflowM3h = positiveNumber(pushInlets.totalPushAirflowM3h);
-  const serialCavityAirflowM3h = Math.max(magnetronAirflowM3h, pushAirflowM3h);
-  const pushMagnetronFlowDeltaM3h = pushAirflowM3h - magnetronAirflowM3h;
   const pushInletCount = positiveNumber(defaults.pushInletCount);
   const curveFlowPerInletAt50HzM3h = positiveNumber(pushInlets.curveFlowPerInletAt50HzM3h);
   const processFanFrequencyHz = positiveNumber(defaults.processFanFrequencyHz);
@@ -205,6 +206,8 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     ? processFanFrequencyHz * (indicativeInletFlowPerFanM3h / curveFlowPerInletAt50HzM3h)
     : 0;
   const indicativeInletFlowAtFrequencyM3h = pushInletCount * curveFlowPerInletAt50HzM3h * (indicativeInletFrequencyHz / processFanFrequencyHz || 0);
+  const serialCavityAirflowM3h = Math.max(magnetronAirflowM3h, indicativeInletFlowAtFrequencyM3h);
+  const pushMagnetronFlowDeltaM3h = indicativeInletFlowAtFrequencyM3h - magnetronAirflowM3h;
   const requiredOpeningAreaM2 = maxMagnetronOpeningVelocityMs > 0
     ? (magnetronAirflowM3h / SECONDS_PER_HOUR) / maxMagnetronOpeningVelocityMs
     : 0;
@@ -229,8 +232,8 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     warnings.push({ level: "fail", message: "Magnetron-air opening area is below the area required for the selected velocity limit." });
   }
 
-  if (pushAirflowM3h < magnetronAirflowM3h) {
-    warnings.push({ level: "warning", message: "Push airflow is below the magnetron airflow requirement in the serial process line." });
+  if (indicativeInletFlowAtFrequencyM3h < magnetronAirflowM3h) {
+    warnings.push({ level: "warning", message: "Indicative controlled push flow is below the magnetron airflow requirement." });
   }
 
   if (indicativeInletFrequencyHz > processFanFrequencyHz && indicativeInletFrequencyHz <= processFanMaxFrequencyHz) {
@@ -255,6 +258,7 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     openingVelocityMs,
     magnetronAirflowM3h,
     pushAirflowM3h,
+    indicativeInletFlowAtFrequencyM3h,
     serialCavityAirflowM3h,
     pushMagnetronFlowDeltaM3h,
     indicativeInletTargetFlowM3h,

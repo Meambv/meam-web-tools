@@ -155,7 +155,8 @@ Rules and warnings:
 - The tool should warn if the entered inlet pressure would create positive pressure relative to ambient.
 - Push air should be treated as controlled supply air, not as permission to pressurize the cavity.
 - The push inlet fan flow should be estimated from the process fan static-pressure curve at the entered low pressure difference. At -5 to -10 Pa the IRT/4-450 is close to the 0 Pa curve point, so the 50 Hz estimated flow is near 10000 m3/h per fan.
-- The entered target flow per inlet is the controlled target, while the 50 Hz curve flow is an estimate of available capacity at the selected pressure.
+- The entered fan data flow and fan data power are reference values at the fan data static pressure, not the real operating flow at the low inlet pressure.
+- The 50 Hz curve flow is an estimate of available capacity at the selected inlet pressure. The controlled push flow and indicative VFD setting are estimates and should be italic in the UI.
 - Indicative inlet VFD frequency should compare required flow per fan against the curve-estimated 50 Hz flow. If the target pressure is more negative, available flow drops and the indicative frequency rises; if pressure is closer to ambient, the fan should slow down.
 
 ### 2. Magnetron Cooling Air

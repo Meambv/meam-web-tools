@@ -1,5 +1,5 @@
-import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=push-curve";
-import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=push-curve";
+import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=push-clarity";
+import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=push-clarity";
 
 const REDIRECT_DELAY_MS = 1200;
 

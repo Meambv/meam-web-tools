@@ -1,4 +1,4 @@
-import { getDefaultFanForRole } from "./fanLibrary.js?v=push-curve";
+import { getDefaultFanForRole } from "./fanLibrary.js?v=push-clarity";
 
 const magnetronFan = getDefaultFanForRole("magnetronCooling");
 const processFan = getDefaultFanForRole("pushInlet");
