@@ -1,4 +1,4 @@
-import { getDefaultFanForRole } from "./fanLibrary.js?v=phase7-cavity-pressure";
+import { getDefaultFanForRole } from "./fanLibrary.js?v=working-defaults";
 
 const SECONDS_PER_HOUR = 3600;
 const STANDARD_AIR_TEMPERATURE_K = 293.15;

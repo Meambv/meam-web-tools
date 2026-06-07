@@ -38,7 +38,7 @@
         <div class="overview-grid">
           <article class="metric-tile">
             <span class="metric-label">Reference system</span>
-            <strong data-default="magnetronCount">200</strong>
+            <strong data-default="magnetronCount">230</strong>
             <span>magnetrons</span>
           </article>
           <article class="metric-tile">
@@ -181,7 +181,7 @@
             <label class="input-row">
               <span>Number of magnetrons</span>
               <span class="input-control">
-                <input data-default-input="magnetronCount" type="number" step="1" min="0" value="200" />
+                <input data-default-input="magnetronCount" type="number" step="1" min="0" value="230" />
                 <small>pcs</small>
               </span>
             </label>
@@ -202,7 +202,7 @@
             <label class="input-row important">
               <span>Total heat load to cooling air</span>
               <span class="input-control">
-                <input data-default-input="heatLoadKw" type="number" step="1" min="0" value="0" />
+                <input data-default-input="heatLoadKw" type="number" step="1" min="0" value="120" />
                 <small>kW</small>
               </span>
             </label>
@@ -218,7 +218,7 @@
             <label class="input-row">
               <span>Target airflow per magnetron</span>
               <span class="input-control">
-                <input data-default-input="targetAirflowPerMagnetronM3h" type="number" step="0.1" min="0" value="57.5" />
+                <input data-default-input="targetAirflowPerMagnetronM3h" type="number" step="0.1" min="0" value="57.8" />
                 <small>m3/h</small>
               </span>
             </label>
@@ -450,7 +450,7 @@
             <label class="input-row important">
               <span>Magnetron air open L</span>
               <span class="input-control">
-                <input data-default-input="magnetronAirOpeningLengthM" type="number" step="0.01" min="0" value="1" />
+                <input data-default-input="magnetronAirOpeningLengthM" type="number" step="0.01" min="0" value="20" />
                 <small>m</small>
               </span>
             </label>
@@ -579,7 +579,7 @@
             <label class="input-row">
               <span>Extraction fans</span>
               <span class="input-control">
-                <input data-default-input="extractionFanCount" type="number" step="1" min="0" value="3" />
+                <input data-default-input="extractionFanCount" type="number" step="1" min="0" value="4" />
                 <small>pcs</small>
               </span>
             </label>
@@ -638,7 +638,7 @@
             <label class="input-row important">
               <span>Absolute moisture</span>
               <span class="input-control">
-                <input data-default-input="extractionAbsoluteMoistureGKg" type="number" step="1" min="0" value="80" />
+                <input data-default-input="extractionAbsoluteMoistureGKg" type="number" step="1" min="0" value="60" />
                 <small>g/kg</small>
               </span>
             </label>
@@ -712,6 +712,6 @@
     </section>
   </main>
 
-  <script type="module" src="./app.js?v=phase7-cavity-pressure"></script>
+  <script type="module" src="./app.js?v=working-defaults"></script>
 </body>
 </html>

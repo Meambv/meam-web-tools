@@ -1,4 +1,4 @@
-import { getDefaultFanForRole } from "./fanLibrary.js?v=phase7-cavity-pressure";
+import { getDefaultFanForRole } from "./fanLibrary.js?v=working-defaults";
 
 const magnetronFan = getDefaultFanForRole("magnetronCooling");
 const processFan = getDefaultFanForRole("pushInlet");
@@ -7,19 +7,19 @@ export const ACCESS_STORAGE_KEY = "meam:webtools:access";
 export const ACCESS_CODE = "B5C6D7";
 
 export const DEFAULTS = Object.freeze({
-  magnetronCount: 200,
+  magnetronCount: 230,
   fansPerMagnetron: 1,
   systemPowerKw: 300,
-  heatLoadKw: 0,
+  heatLoadKw: 120,
   calculationMode: "validateTarget",
-  targetAirflowPerMagnetronM3h: 57.5,
+  targetAirflowPerMagnetronM3h: 57.8,
   ambientTemperatureC: 20,
   maxOutletTemperatureC: 50,
   targetCavityPressurePa: -20,
   cavityLengthM: 20,
   cavityWidthM: 1.2,
   cavityHeightM: 0.8,
-  magnetronAirOpeningLengthM: 1,
+  magnetronAirOpeningLengthM: 20,
   magnetronAirOpeningWidthM: 0.2,
   maxMagnetronOpeningVelocityMs: 6,
   pushInletCount: 3,
@@ -28,7 +28,7 @@ export const DEFAULTS = Object.freeze({
   pushInletTemperatureC: 20,
   pushInletRelativeHumidityPercent: 80,
   pushInletDeltaPPa: -5,
-  extractionFanCount: 3,
+  extractionFanCount: 4,
   extractionAirflowPerFanM3h: processFan.actualWorkpoint.airflowM3h,
   extractionFanPowerW: processFan.actualWorkpoint.inputPowerKw * 1000,
   extractionCavityAbsolutePressurePa: 101225,
@@ -36,7 +36,7 @@ export const DEFAULTS = Object.freeze({
   extractionFanGroupLabel: "All extraction fans",
   extractionControlMode: "humidityTemperature",
   extractionTemperatureC: 45,
-  extractionAbsoluteMoistureGKg: 80,
+  extractionAbsoluteMoistureGKg: 60,
   extractionAirPressurePa: 101325,
   extractionControlMarginPercent: 10,
   processFanModel: processFan.label,

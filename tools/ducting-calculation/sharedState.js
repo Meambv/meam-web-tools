@@ -1,5 +1,5 @@
-import { DEFAULTS } from "./constants.js?v=phase7-cavity-pressure";
-import { calculateCavityBalance, calculateExtractionControl, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=phase7-cavity-pressure";
+import { DEFAULTS } from "./constants.js?v=working-defaults";
+import { calculateCavityBalance, calculateExtractionControl, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=working-defaults";
 
 const subscribers = new Set();
 const STORAGE_KEYS = Object.freeze({
