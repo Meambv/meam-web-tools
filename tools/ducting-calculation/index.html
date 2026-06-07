@@ -528,6 +528,40 @@
         <p class="panel-note">
           Magnetron cooling is calculated from editable heat load, airflow, ambient temperature, and outlet temperature limit.
         </p>
+        <div class="summary-board" aria-label="First results summary">
+          <div class="section-row estimate-row">
+            <strong>Push required flow *</strong>
+            <span><output data-summary-output="requiredPushAirflowM3h">0</output> m3/h</span>
+          </div>
+          <div class="section-row">
+            <strong>Magnetron airflow</strong>
+            <span><output data-summary-output="magnetronAirflowM3h">0</output> m3/h</span>
+          </div>
+          <div class="section-row">
+            <strong>Serial cavity airflow</strong>
+            <span><output data-summary-output="serialCavityAirflowM3h">0</output> m3/h</span>
+          </div>
+          <div class="section-row estimate-row">
+            <strong>Extraction wet airflow *</strong>
+            <span><output data-summary-output="correctedWetAirVolumeFlowM3h">0</output> m3/h</span>
+          </div>
+          <div class="section-row estimate-row" data-summary-extraction-margin-row>
+            <strong>Extraction margin *</strong>
+            <span><output data-summary-output="extractionCapacityMarginM3h">0</output> m3/h</span>
+          </div>
+          <div class="section-row">
+            <strong>Magnetron outlet temp</strong>
+            <span><output data-summary-output="outletTemperatureC">0</output> degrees C</span>
+          </div>
+          <div class="section-row">
+            <strong>Cavity pressure target</strong>
+            <span><output data-summary-output="targetCavityPressurePa">0</output> Pa</span>
+          </div>
+          <div class="section-row" data-summary-overall-row>
+            <strong>Overall status</strong>
+            <span><output data-summary-output="overallStatus">Not calculated</output></span>
+          </div>
+        </div>
         <p class="panel-note estimate-note">* Italic values are estimates. Real fan speed is controlled by PLC PID targeting approximately -2 to -10 Pa.</p>
         <ul class="warning-list" data-cooling-warnings></ul>
         <ul class="warning-list" data-push-warnings></ul>

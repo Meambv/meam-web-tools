@@ -36,7 +36,10 @@ const elements = {
   extractionStatus: document.querySelector("[data-extraction-status]"),
   extractionWarnings: document.querySelector("[data-extraction-warnings]"),
   extractionMarginRow: document.querySelector("[data-extraction-margin-row]"),
-  extractionFrequencyRow: document.querySelector("[data-extraction-frequency-row]")
+  extractionFrequencyRow: document.querySelector("[data-extraction-frequency-row]"),
+  summaryOutputs: document.querySelectorAll("[data-summary-output]"),
+  summaryExtractionMarginRow: document.querySelector("[data-summary-extraction-margin-row]"),
+  summaryOverallRow: document.querySelector("[data-summary-overall-row]")
 };
 
 const COOLING_STATUS_TEXT = Object.freeze({
@@ -171,6 +174,45 @@ function renderExtractionControl(state) {
   renderWarningList(elements.extractionWarnings, state.extractionControl.warnings);
 }
 
+function renderOverallSummary(state) {
+  const summary = buildOverallSummary(state);
+
+  elements.summaryOutputs.forEach((output) => {
+    const key = output.dataset.summaryOutput;
+    const value = summary[key];
+
+    if (value !== undefined) {
+      output.textContent = typeof value === "string" ? value : formatNumber(value, key);
+    }
+  });
+
+  elements.summaryExtractionMarginRow.classList.toggle("over-target", summary.extractionCapacityMarginM3h < 0);
+  elements.summaryOverallRow.classList.remove("pass", "warning", "fail");
+  elements.summaryOverallRow.classList.add(summary.overallStatusLevel);
+}
+
+function buildOverallSummary(state) {
+  const statuses = [
+    state.magnetronCooling.status,
+    state.pushInlets.status,
+    state.cavityBalance.status,
+    state.extractionControl.status
+  ];
+  const overallStatusLevel = statuses.includes("fail") ? "fail" : statuses.includes("warning") ? "warning" : "pass";
+
+  return {
+    requiredPushAirflowM3h: state.cavityBalance.requiredPushAirflowM3h,
+    magnetronAirflowM3h: state.cavityBalance.magnetronAirflowM3h,
+    serialCavityAirflowM3h: state.cavityBalance.serialCavityAirflowM3h,
+    correctedWetAirVolumeFlowM3h: state.extractionControl.correctedWetAirVolumeFlowM3h,
+    extractionCapacityMarginM3h: state.extractionControl.extractionCapacityMarginM3h,
+    outletTemperatureC: state.magnetronCooling.outletTemperatureC,
+    targetCavityPressurePa: state.cavityBalance.targetCavityPressurePa,
+    overallStatus: SIMPLE_STATUS_TEXT[overallStatusLevel],
+    overallStatusLevel
+  };
+}
+
 function renderCoolingWarnings(warnings) {
   renderWarningList(elements.coolingWarnings, warnings);
 }
@@ -293,6 +335,7 @@ function initializeApp() {
   subscribeToSharedState(renderPushInlets);
   subscribeToSharedState(renderCavityBalance);
   subscribeToSharedState(renderExtractionControl);
+  subscribeToSharedState(renderOverallSummary);
   bindDefaultInputs();
   bindStorageButtons();
 

@@ -456,11 +456,16 @@ output {
 }
 
 .section-stack,
-.status-board {
+.status-board,
+.summary-board {
   display: grid;
   gap: 1px;
   padding: 1px;
   background: var(--line);
+}
+
+.summary-board {
+  margin: 6px;
 }
 
 .section-row {
