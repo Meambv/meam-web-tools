@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | MEAM Web Tools</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07111f;
+      --panel: rgba(12, 20, 35, 0.9);
+      --border: rgba(148, 163, 184, 0.16);
+      --text: #e5eefb;
+      --muted: #94a3b8;
+      --accent: #f59e0b;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(245, 158, 11, 0.14), transparent 24%),
+        linear-gradient(135deg, #040814, #0a1322 55%, #050a13);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    main {
+      width: min(100%, 760px);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(10px);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
+    p { color: var(--muted); line-height: 1.65; }
+
+    .note {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      color: #ffe8ba;
+    }
+
+    .links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    a {
+      text-decoration: none;
+      color: #06131f;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .secondary {
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--text);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Restricted area</p>
+    <h1>Admin page</h1>
+    <p>
+      This is the separate admin directory. If you want true GitHub-authenticated access,
+      we should wire an OAuth or server-side check next.
+    </p>
+
+    <div class="note">
+      For now, this page is isolated from the landing page and tool pages, and the admin
+      button only appears on the home page.
+    </div>
+
+    <div class="links">
+      <a href="/">Home</a>
+      <a class="secondary" href="/tools/ducting-calculation/">Tool</a>
+    </div>
+  </main>
+</body>
+</html>
