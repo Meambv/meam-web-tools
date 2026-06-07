@@ -1,5 +1,5 @@
-import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=phase6-serial";
-import { resetDefaults, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=phase6-serial";
+import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=save-open";
+import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=save-open";
 
 const REDIRECT_DELAY_MS = 1200;
 
@@ -7,6 +7,10 @@ const elements = {
   accessStatus: document.querySelector("[data-access-status]"),
   accessMessage: document.querySelector("[data-access-message]"),
   accessSummary: document.querySelector("[data-access-summary]"),
+  saveCalculator: document.querySelector("[data-save-calculator]"),
+  openCalculator: document.querySelector("[data-open-calculator]"),
+  saveProcessFan: document.querySelector("[data-save-process-fan]"),
+  openProcessFan: document.querySelector("[data-open-process-fan]"),
   defaultValues: document.querySelectorAll("[data-default]"),
   defaultInputs: document.querySelectorAll("[data-default-input]"),
   resetDefaults: document.querySelector("[data-reset-defaults]"),
@@ -211,6 +215,39 @@ function bindDefaultInputs() {
   });
 }
 
+function bindStorageButtons() {
+  elements.saveCalculator.addEventListener("click", () => {
+    saveCalculatorState();
+    setAccessMessage("Calculator state saved in this browser.");
+  });
+
+  elements.openCalculator.addEventListener("click", () => {
+    const opened = openCalculatorState();
+    if (opened) {
+      populateDefaultInputs(true);
+    }
+    setAccessMessage(opened ? "Calculator state opened from this browser." : "No saved calculator state found.", !opened);
+  });
+
+  elements.saveProcessFan.addEventListener("click", () => {
+    saveProcessFanState();
+    setAccessMessage("Process fan data saved in this browser.");
+  });
+
+  elements.openProcessFan.addEventListener("click", () => {
+    const opened = openProcessFanState();
+    if (opened) {
+      populateDefaultInputs(true);
+    }
+    setAccessMessage(opened ? "Process fan data opened from this browser." : "No saved process fan data found.", !opened);
+  });
+}
+
+function setAccessMessage(message, isWarning = false) {
+  elements.accessMessage.textContent = message;
+  elements.accessMessage.classList.toggle("warning", isWarning);
+}
+
 function redirectWithoutAccess() {
   window.setTimeout(() => window.location.replace("/"), REDIRECT_DELAY_MS);
 }
@@ -222,6 +259,7 @@ function initializeApp() {
   subscribeToSharedState(renderPushInlets);
   subscribeToSharedState(renderCavityBalance);
   bindDefaultInputs();
+  bindStorageButtons();
 
   const accessGranted = hasValidAccess();
   updateSharedState({ accessGranted });

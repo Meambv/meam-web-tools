@@ -162,8 +162,10 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 ## Phase 13: Save And Export Later
 
-- [ ] Save calculation state in browser local storage.
-- [ ] Load saved calculation state.
+- [x] Save calculation state in browser local storage.
+- [x] Load saved calculation state.
+- [x] Save selected process fan data in browser local storage.
+- [x] Load selected process fan data in browser local storage.
 - [ ] Export JSON.
 - [ ] Export CSV summary.
 - [ ] Add print-friendly result view.
