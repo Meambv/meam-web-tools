@@ -5,6 +5,8 @@ export const DEFAULTS = Object.freeze({
   magnetronCount: 200,
   fansPerMagnetron: 1,
   systemPowerKw: 300,
+  heatLoadKw: 0,
+  targetAirflowPerMagnetronM3h: 57.5,
   ambientTemperatureC: 20,
   maxOutletTemperatureC: 50,
   targetCavityPressurePa: -20,

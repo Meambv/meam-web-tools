@@ -9,8 +9,18 @@ const elements = {
   accessSummary: document.querySelector("[data-access-summary]"),
   defaultValues: document.querySelectorAll("[data-default]"),
   defaultInputs: document.querySelectorAll("[data-default-input]"),
-  resetDefaults: document.querySelector("[data-reset-defaults]")
+  resetDefaults: document.querySelector("[data-reset-defaults]"),
+  coolingOutputs: document.querySelectorAll("[data-cooling-output]"),
+  coolingStatusLine: document.querySelector("[data-cooling-status-line]"),
+  coolingStatus: document.querySelector("[data-cooling-status]"),
+  coolingWarnings: document.querySelector("[data-cooling-warnings]")
 };
+
+const COOLING_STATUS_TEXT = Object.freeze({
+  pass: "Below limit",
+  warning: "Needs input",
+  fail: "Hard fail"
+});
 
 function hasValidAccess() {
   return sessionStorage.getItem(ACCESS_STORAGE_KEY) === ACCESS_CODE;
@@ -61,6 +71,43 @@ function renderDefaults() {
   populateDefaultInputs();
 }
 
+function renderMagnetronCooling(state) {
+  elements.coolingOutputs.forEach((output) => {
+    const key = output.dataset.coolingOutput;
+    const value = state.magnetronCooling[key];
+
+    if (value !== undefined) {
+      output.textContent = formatNumber(value);
+    }
+  });
+
+  elements.coolingStatus.textContent = COOLING_STATUS_TEXT[state.magnetronCooling.status];
+  elements.coolingStatusLine.classList.remove("neutral", "pass", "warning", "fail");
+  elements.coolingStatusLine.classList.add(state.magnetronCooling.status);
+  renderCoolingWarnings(state.magnetronCooling.warnings);
+}
+
+function renderCoolingWarnings(warnings) {
+  elements.coolingWarnings.replaceChildren();
+
+  warnings.forEach((warning) => {
+    const item = document.createElement("li");
+    item.className = warning.level;
+    item.textContent = warning.message;
+    elements.coolingWarnings.append(item);
+  });
+}
+
+function formatNumber(value) {
+  if (!Number.isFinite(value)) {
+    return "0";
+  }
+
+  return new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: value >= 100 ? 0 : 1
+  }).format(value);
+}
+
 function bindDefaultInputs() {
   elements.defaultInputs.forEach((input) => {
     input.addEventListener("input", () => {
@@ -81,6 +128,7 @@ function redirectWithoutAccess() {
 function initializeApp() {
   subscribeToSharedState(renderAccessState);
   subscribeToSharedState(renderDefaults);
+  subscribeToSharedState(renderMagnetronCooling);
   bindDefaultInputs();
 
   const accessGranted = hasValidAccess();

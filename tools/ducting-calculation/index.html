@@ -28,10 +28,10 @@
       <section class="panel panel-large" aria-labelledby="process-overview-title">
         <div class="panel-header">
           <div>
-            <p class="section-label">Phase 1 shell</p>
+            <p class="section-label">Live reference</p>
             <h2 id="process-overview-title">Process Overview</h2>
           </div>
-          <span class="panel-state">Draft layout</span>
+          <span class="panel-state">Phase 3</span>
         </div>
         <div class="overview-grid">
           <article class="metric-tile">
@@ -108,27 +108,73 @@
         </form>
       </section>
 
-      <section class="panel" aria-labelledby="inputs-title">
+      <section class="panel panel-large" aria-labelledby="magnetron-title">
         <div class="panel-header compact">
-          <h2 id="inputs-title">Input Sections</h2>
-          <span class="panel-state">Queued</span>
+          <h2 id="magnetron-title">Magnetron Cooling Core</h2>
+          <span class="panel-state">Phase 3</span>
         </div>
-        <div class="section-stack">
-          <div class="section-row">
-            <strong>Magnetron cooling</strong>
-            <span>Heat load, fan airflow, outlet temperature</span>
-          </div>
-          <div class="section-row">
-            <strong>Push inlets</strong>
-            <span>Airflow, temperature, deltaP</span>
-          </div>
-          <div class="section-row">
-            <strong>Cavity balance</strong>
-            <span>Negative pressure and humidity containment</span>
-          </div>
-          <div class="section-row">
-            <strong>Extraction fans</strong>
-            <span>Total pull, fan groups, control mode</span>
+        <div class="cooling-grid">
+          <form class="defaults-form" data-magnetron-form>
+            <label class="input-row">
+              <span>Number of magnetrons</span>
+              <span class="input-control">
+                <input data-default-input="magnetronCount" type="number" step="1" min="0" value="200" />
+                <small>pcs</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Fans per magnetron</span>
+              <span class="input-control">
+                <input data-default-input="fansPerMagnetron" type="number" step="1" min="0" value="1" />
+                <small>pcs</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Total system power</span>
+              <span class="input-control">
+                <input data-default-input="systemPowerKw" type="number" step="1" min="0" value="300" />
+                <small>kW</small>
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>Heat load to cooling air</span>
+              <span class="input-control">
+                <input data-default-input="heatLoadKw" type="number" step="1" min="0" value="0" />
+                <small>kW</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Target airflow per magnetron</span>
+              <span class="input-control">
+                <input data-default-input="targetAirflowPerMagnetronM3h" type="number" step="0.1" min="0" value="57.5" />
+                <small>m3/h</small>
+              </span>
+            </label>
+          </form>
+
+          <div class="cooling-results" aria-label="Magnetron cooling results">
+            <div class="section-row">
+              <strong>Total magnetron airflow</strong>
+              <span><output data-cooling-output="totalTargetAirflowM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row">
+              <strong>Heat load per magnetron</strong>
+              <span><output data-cooling-output="heatLoadPerMagnetronKw">0</output> kW</span>
+            </div>
+            <div class="section-row">
+              <strong>Outlet air temperature</strong>
+              <span><output data-cooling-output="outletTemperatureC">20</output> degrees C</span>
+            </div>
+            <div class="section-row">
+              <strong>Required airflow per magnetron</strong>
+              <span><output data-cooling-output="requiredAirflowPerMagnetronM3h">0</output> m3/h</span>
+            </div>
+            <div class="fact-grid">
+              <span>Measured range: <strong><span data-default="measuredFanAirflowMinM3h">45</span>-<span data-default="measuredFanAirflowMaxM3h">70</span> m3/h</strong></span>
+              <span>Restricted flow: <strong><span data-default="restrictedFanAirflowM3h">50</span> m3/h</strong></span>
+              <span>Freeflow rating: <strong><span data-default="fanFreeflowCfm">135</span> CFM</strong></span>
+              <span>Restriction: <strong><span data-default="restrictionPressureLossPa">50</span> Pa, <span data-default="restrictionHoleCount">40</span> holes of <span data-default="restrictionHoleWidthMm">9</span> x <span data-default="restrictionHoleHeightMm">9</span> mm</strong></span>
+            </div>
           </div>
         </div>
       </section>
@@ -136,16 +182,16 @@
       <aside class="panel results-panel" aria-labelledby="results-title">
         <div class="panel-header compact">
           <h2 id="results-title">Results And Warnings</h2>
-          <span class="panel-state warning">Shell only</span>
+          <span class="panel-state">Live cooling</span>
         </div>
         <div class="status-board">
           <div class="status-line neutral">
             <span>Access</span>
             <strong data-access-summary>Pending</strong>
           </div>
-          <div class="status-line neutral">
+          <div class="status-line neutral" data-cooling-status-line>
             <span>Magnetron outlet</span>
-            <strong>Not calculated</strong>
+            <strong data-cooling-status>Not calculated</strong>
           </div>
           <div class="status-line neutral">
             <span>Cavity pressure</span>
@@ -157,8 +203,9 @@
           </div>
         </div>
         <p class="panel-note">
-          Calculation fields will be added after this desktop shell and access flow are verified.
+          Magnetron cooling is calculated from editable heat load, airflow, ambient temperature, and outlet temperature limit.
         </p>
+        <ul class="warning-list" data-cooling-warnings></ul>
       </aside>
     </section>
   </main>

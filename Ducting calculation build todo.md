@@ -43,21 +43,21 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 ## Phase 3: Magnetron Cooling Core
 
-- [ ] Add number of magnetrons, default 200.
-- [ ] Add fans per magnetron, default 1.
-- [ ] Add total system power, default 300 kW.
-- [ ] Add manually entered heat load fraction or direct heat load.
-- [ ] Add target airflow per magnetron, default 57.5 m3/h.
-- [ ] Show measured fan range, 45 to 70 m3/h.
-- [ ] Show measured typical restricted airflow, about 50 m3/h.
-- [ ] Show fan freeflow rating, 135 CFM.
-- [ ] Show magnetron cooling restriction pressure loss, about 50 Pa.
-- [ ] Show restriction geometry, 40 holes of 9 mm by 9 mm.
-- [ ] Calculate total magnetron airflow.
-- [ ] Calculate heat load per magnetron.
-- [ ] Calculate outlet air temperature after the magnetron.
-- [ ] Calculate required airflow to stay below the outlet limit.
-- [ ] Add hard fail when outlet air temperature is 50 degrees C or higher.
+- [x] Add number of magnetrons, default 200.
+- [x] Add fans per magnetron, default 1.
+- [x] Add total system power, default 300 kW.
+- [x] Add manually entered heat load fraction or direct heat load.
+- [x] Add target airflow per magnetron, default 57.5 m3/h.
+- [x] Show measured fan range, 45 to 70 m3/h.
+- [x] Show measured typical restricted airflow, about 50 m3/h.
+- [x] Show fan freeflow rating, 135 CFM.
+- [x] Show magnetron cooling restriction pressure loss, about 50 Pa.
+- [x] Show restriction geometry, 40 holes of 9 mm by 9 mm.
+- [x] Calculate total magnetron airflow.
+- [x] Calculate heat load per magnetron.
+- [x] Calculate outlet air temperature after the magnetron.
+- [x] Calculate required airflow to stay below the outlet limit.
+- [x] Add hard fail when outlet air temperature is 50 degrees C or higher.
 
 ## Phase 4: Calculation Mode Switch
 
@@ -163,4 +163,5 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 - [x] Implement Phase 0 and Phase 1 only.
 - [x] Stop and verify the desktop shell before adding calculations.
-- [ ] Implement Phase 3 magnetron cooling core.
+- [x] Implement Phase 3 magnetron cooling core.
+- [ ] Implement Phase 4 calculation mode switch.
