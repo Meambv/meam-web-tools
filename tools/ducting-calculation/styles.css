@@ -483,6 +483,12 @@ output {
   font-weight: 800;
 }
 
+.estimate-row,
+.estimate-row output,
+.estimate-note {
+  font-style: italic;
+}
+
 .warning-list {
   display: grid;
   gap: 1px;

@@ -1,5 +1,5 @@
-import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=fan-library";
-import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=fan-library";
+import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=indicative-vfd";
+import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=indicative-vfd";
 
 const REDIRECT_DELAY_MS = 1200;
 
@@ -171,7 +171,7 @@ function formatNumber(value, key = "") {
     return value.toFixed(1);
   }
 
-  if (key.endsWith("M2") || key.endsWith("M3") || key.endsWith("Ms")) {
+  if (key.endsWith("M2") || key.endsWith("M3") || key.endsWith("Ms") || key.endsWith("Hz")) {
     return new Intl.NumberFormat("en-US", {
       maximumFractionDigits: 2
     }).format(value);

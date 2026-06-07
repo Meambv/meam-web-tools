@@ -128,6 +128,10 @@ Control principle:
 
 The tool should therefore treat extraction as a controlled downstream actuator, not just as a static airflow total. VFD setting, fan curve, cavity pressure target, magnetron temperature limit, and process convection should be evaluated together.
 
+The real fan speed control is handled by PLC PID, not by the web tool. The web tool should show indicative VFD settings only. The PLC target range for cavity pressure is approximately -2 to -10 Pa.
+
+Extraction control will also need relative humidity and temperature inputs. These values affect how hard extraction should pull: enough to remove humidity and protect magnetrons, but not so much that useful heat transfer/convection in the cavity is lost.
+
 ## Main Calculation Sections
 
 ### 1. Push Inlets
@@ -246,6 +250,7 @@ Rules and warnings:
 - The tool should flag configurations where extraction cannot maintain below-ambient pressure.
 - The tool should warn when extraction pull is likely too high for the desired convection/residence behavior in the cavity.
 - The tool should warn when extraction pull is likely too low for humidity containment or magnetron temperature control.
+- Extraction control should later include relative humidity and temperature because downstream airflow demand depends on both process moisture and heat removal.
 
 Extraction temperature and humidity should be treated by extraction area. The air is expected to become warmer and more humid along the extraction path. As a first simplifying assumption, the tool may treat the target extraction temperature as the same across all extraction areas, while still allowing humidity and load distribution to be refined later.
 

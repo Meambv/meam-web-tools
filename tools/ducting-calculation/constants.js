@@ -1,4 +1,4 @@
-import { getDefaultFanForRole } from "./fanLibrary.js?v=fan-library";
+import { getDefaultFanForRole } from "./fanLibrary.js?v=indicative-vfd";
 
 const magnetronFan = getDefaultFanForRole("magnetronCooling");
 const processFan = getDefaultFanForRole("pushInlet");

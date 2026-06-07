@@ -472,6 +472,14 @@
               <strong>Opening velocity</strong>
               <span><output data-cavity-output="openingVelocityMs">0</output> m/s</span>
             </div>
+            <div class="section-row estimate-row">
+              <strong>Indicative inlet VFD setting *</strong>
+              <span><output data-cavity-output="indicativeInletFrequencyHz">0</output> Hz</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Indicative inlet flow per fan *</strong>
+              <span><output data-cavity-output="indicativeInletFlowPerFanM3h">0</output> m3/h</span>
+            </div>
           </div>
         </div>
       </section>
@@ -506,6 +514,7 @@
         <p class="panel-note">
           Magnetron cooling is calculated from editable heat load, airflow, ambient temperature, and outlet temperature limit.
         </p>
+        <p class="panel-note estimate-note">* Italic values are estimates. Real fan speed is controlled by PLC PID targeting approximately -2 to -10 Pa.</p>
         <ul class="warning-list" data-cooling-warnings></ul>
         <ul class="warning-list" data-push-warnings></ul>
         <ul class="warning-list" data-cavity-warnings></ul>
@@ -513,6 +522,6 @@
     </section>
   </main>
 
-  <script type="module" src="./app.js?v=fan-library"></script>
+  <script type="module" src="./app.js?v=indicative-vfd"></script>
 </body>
 </html>

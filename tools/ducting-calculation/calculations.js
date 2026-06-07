@@ -182,6 +182,16 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
   const pushAirflowM3h = positiveNumber(pushInlets.totalPushAirflowM3h);
   const serialCavityAirflowM3h = Math.max(magnetronAirflowM3h, pushAirflowM3h);
   const pushMagnetronFlowDeltaM3h = pushAirflowM3h - magnetronAirflowM3h;
+  const pushInletCount = positiveNumber(defaults.pushInletCount);
+  const pushAirflowPerInletM3h = positiveNumber(defaults.pushAirflowPerInletM3h);
+  const processFanFrequencyHz = positiveNumber(defaults.processFanFrequencyHz);
+  const processFanMaxFrequencyHz = positiveNumber(defaults.processFanMaxFrequencyHz);
+  const indicativeInletTargetFlowM3h = magnetronAirflowM3h;
+  const indicativeInletFlowPerFanM3h = pushInletCount > 0 ? indicativeInletTargetFlowM3h / pushInletCount : 0;
+  const indicativeInletFrequencyHz = pushAirflowPerInletM3h > 0 && processFanFrequencyHz > 0
+    ? processFanFrequencyHz * (indicativeInletFlowPerFanM3h / pushAirflowPerInletM3h)
+    : 0;
+  const indicativeInletFlowAtFrequencyM3h = pushInletCount * pushAirflowPerInletM3h * (indicativeInletFrequencyHz / processFanFrequencyHz || 0);
   const requiredOpeningAreaM2 = maxMagnetronOpeningVelocityMs > 0
     ? (magnetronAirflowM3h / SECONDS_PER_HOUR) / maxMagnetronOpeningVelocityMs
     : 0;
@@ -210,6 +220,14 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     warnings.push({ level: "warning", message: "Push airflow is below the magnetron airflow requirement in the serial process line." });
   }
 
+  if (indicativeInletFrequencyHz > processFanFrequencyHz && indicativeInletFrequencyHz <= processFanMaxFrequencyHz) {
+    warnings.push({ level: "warning", message: "Indicative inlet VFD setting is above nominal frequency." });
+  }
+
+  if (processFanMaxFrequencyHz > 0 && indicativeInletFrequencyHz > processFanMaxFrequencyHz) {
+    warnings.push({ level: "fail", message: "Indicative inlet VFD setting is above the configured ramp limit." });
+  }
+
   return {
     targetCavityPressurePa,
     cavityLengthM,
@@ -226,6 +244,10 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     pushAirflowM3h,
     serialCavityAirflowM3h,
     pushMagnetronFlowDeltaM3h,
+    indicativeInletTargetFlowM3h,
+    indicativeInletFlowPerFanM3h,
+    indicativeInletFrequencyHz,
+    indicativeInletFlowAtFrequencyM3h,
     status: getCoolingStatus(warnings),
     warnings
   };

@@ -103,7 +103,11 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [ ] Add fan-curve data entry for IRT/4-450 airflow versus static pressure.
 - [x] Add metric fan library with IRT/4-450 50 Hz curve data.
 - [ ] Add VFD frequency estimate from required airflow and static pressure.
+- [x] Add indicative inlet VFD estimate rows before final extraction control.
 - [ ] Warn when required operation exceeds 50 Hz and depends on ramping toward 60 Hz.
+- [x] Mark VFD estimates as indicative because real fan speed is PLC PID controlled.
+- [x] Use PLC pressure target range of about -2 to -10 Pa.
+- [ ] Add relative humidity and temperature inputs for extraction control.
 - [ ] Add cavity pressure target and serial airflow target as extraction control inputs.
 - [ ] Warn if extraction pull is too low for negative pressure, humidity removal, or magnetron temperature control.
 - [ ] Warn if extraction pull is too high and likely reduces useful convection/residence behavior.
