@@ -381,6 +381,22 @@
               <strong>50 Hz curve capacity *</strong>
               <span><output data-push-output="totalCurvePushAirflowAt50HzM3h">0</output> m3/h</span>
             </div>
+            <div class="section-row estimate-row">
+              <strong>Needed flow per inlet *</strong>
+              <span><output data-cavity-output="indicativeInletFlowPerFanM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Indicative inlet VFD setting *</strong>
+              <span><output data-cavity-output="indicativeInletFrequencyHz">0</output> Hz</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Controlled push flow *</strong>
+              <span><output data-cavity-output="indicativeInletFlowAtFrequencyM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row estimate-row" data-flow-delta-row>
+              <strong>Controlled minus magnetron *</strong>
+              <span><output data-cavity-output="pushMagnetronFlowDeltaM3h">0</output> m3/h</span>
+            </div>
             <div class="section-row">
               <strong>Total push fan power</strong>
               <span><output data-push-output="totalPushFanPowerKw">0</output> kW</span>
@@ -464,18 +480,6 @@
               <span><output data-cavity-output="magnetronAirflowM3h">0</output> m3/h</span>
             </div>
             <div class="section-row">
-              <strong>Fan data push flow</strong>
-              <span><output data-cavity-output="pushAirflowM3h">0</output> m3/h</span>
-            </div>
-            <div class="section-row estimate-row">
-              <strong>Controlled push flow *</strong>
-              <span><output data-cavity-output="indicativeInletFlowAtFrequencyM3h">0</output> m3/h</span>
-            </div>
-            <div class="section-row" data-flow-delta-row>
-              <strong>Controlled minus magnetron *</strong>
-              <span><output data-cavity-output="pushMagnetronFlowDeltaM3h">0</output> m3/h</span>
-            </div>
-            <div class="section-row">
               <strong>Cavity volume</strong>
               <span><output data-cavity-output="cavityVolumeM3">0</output> m3</span>
             </div>
@@ -490,14 +494,6 @@
             <div class="section-row">
               <strong>Opening velocity</strong>
               <span><output data-cavity-output="openingVelocityMs">0</output> m/s</span>
-            </div>
-            <div class="section-row estimate-row">
-              <strong>Indicative inlet VFD setting *</strong>
-              <span><output data-cavity-output="indicativeInletFrequencyHz">0</output> Hz</span>
-            </div>
-            <div class="section-row estimate-row">
-              <strong>Indicative inlet flow per fan *</strong>
-              <span><output data-cavity-output="indicativeInletFlowPerFanM3h">0</output> m3/h</span>
             </div>
           </div>
         </div>

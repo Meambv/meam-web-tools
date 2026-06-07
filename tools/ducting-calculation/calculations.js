@@ -264,7 +264,6 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     indicativeInletTargetFlowM3h,
     indicativeInletFlowPerFanM3h,
     indicativeInletFrequencyHz,
-    indicativeInletFlowAtFrequencyM3h,
     status: getCoolingStatus(warnings),
     warnings
   };
