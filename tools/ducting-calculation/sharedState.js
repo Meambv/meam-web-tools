@@ -1,5 +1,5 @@
-import { DEFAULTS } from "./constants.js";
-import { calculateCavityBalance, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js";
+import { DEFAULTS } from "./constants.js?v=phase6-serial";
+import { calculateCavityBalance, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=phase6-serial";
 
 const subscribers = new Set();
 
