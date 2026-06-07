@@ -347,6 +347,13 @@
               </span>
             </label>
             <label class="input-row">
+              <span>Fan data pressure</span>
+              <span class="input-control">
+                <input data-default-input="processFanStaticPressurePa" type="number" step="1" min="0" value="888" />
+                <small>Pa</small>
+              </span>
+            </label>
+            <label class="input-row">
               <span>Inlet temperature</span>
               <span class="input-control">
                 <input data-default-input="pushInletTemperatureC" type="number" step="0.1" value="20" />
@@ -362,10 +369,6 @@
             </label>
           </form>
           <div class="section-stack" aria-label="Push inlet results">
-            <div class="section-row">
-              <strong>Fan data pressure</strong>
-              <span><output data-push-output="processFanStaticPressurePa">0</output> Pa</span>
-            </div>
             <div class="section-row">
               <strong>Fan data total flow</strong>
               <span><output data-push-output="totalPushAirflowM3h">0</output> m3/h</span>
