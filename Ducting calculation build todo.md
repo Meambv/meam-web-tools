@@ -61,10 +61,10 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 ## Phase 4: Calculation Mode Switch
 
-- [ ] Add mode: calculate required airflow from heat load and temperature limit.
-- [ ] Add mode: validate entered target airflow and show resulting outlet temperature.
-- [ ] Keep both modes visible enough that the user understands what is being calculated.
-- [ ] Do not hide editable constants used by the active mode.
+- [x] Add mode: calculate required airflow from heat load and temperature limit.
+- [x] Add mode: validate entered target airflow and show resulting outlet temperature.
+- [x] Keep both modes visible enough that the user understands what is being calculated.
+- [x] Do not hide editable constants used by the active mode.
 
 ## Phase 5: Push Inlet Section
 
@@ -164,4 +164,5 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Implement Phase 0 and Phase 1 only.
 - [x] Stop and verify the desktop shell before adding calculations.
 - [x] Implement Phase 3 magnetron cooling core.
-- [ ] Implement Phase 4 calculation mode switch.
+- [x] Implement Phase 4 calculation mode switch.
+- [ ] Implement Phase 5 push inlet section.

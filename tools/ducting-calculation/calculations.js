@@ -6,6 +6,7 @@ export function calculateMagnetronCooling(defaults) {
   const fansPerMagnetron = positiveNumber(defaults.fansPerMagnetron);
   const systemPowerKw = positiveNumber(defaults.systemPowerKw);
   const heatLoadKw = positiveNumber(defaults.heatLoadKw);
+  const calculationMode = defaults.calculationMode === "sizeRequired" ? "sizeRequired" : "validateTarget";
   const targetAirflowPerMagnetronM3h = positiveNumber(defaults.targetAirflowPerMagnetronM3h);
   const ambientTemperatureC = numberOrZero(defaults.ambientTemperatureC);
   const maxOutletTemperatureC = numberOrZero(defaults.maxOutletTemperatureC);
@@ -17,16 +18,24 @@ export function calculateMagnetronCooling(defaults) {
   const fanFreeflowM3h = fanFreeflowCfm * M3H_PER_CFM;
   const totalTargetAirflowM3h = magnetronCount * targetAirflowPerMagnetronM3h;
   const heatLoadPerMagnetronKw = magnetronCount > 0 ? heatLoadKw / magnetronCount : 0;
-  const outletDeltaTC = calculateDeltaT(heatLoadKw, totalTargetAirflowM3h, airDensityKgM3, airHeatCapacityKjKgK);
-  const outletTemperatureC = ambientTemperatureC + outletDeltaTC;
+  const targetOutletDeltaTC = calculateDeltaT(heatLoadKw, totalTargetAirflowM3h, airDensityKgM3, airHeatCapacityKjKgK);
+  const targetOutletTemperatureC = ambientTemperatureC + targetOutletDeltaTC;
   const requiredTotalAirflowM3h = calculateRequiredAirflow(heatLoadKw, allowableDeltaTC, airDensityKgM3, airHeatCapacityKjKgK);
   const requiredAirflowPerMagnetronM3h = magnetronCount > 0 ? requiredTotalAirflowM3h / magnetronCount : 0;
+  const activeAirflowPerMagnetronM3h = calculationMode === "sizeRequired" && requiredAirflowPerMagnetronM3h > 0
+    ? requiredAirflowPerMagnetronM3h
+    : targetAirflowPerMagnetronM3h;
+  const activeTotalAirflowM3h = magnetronCount * activeAirflowPerMagnetronM3h;
+  const outletDeltaTC = calculateDeltaT(heatLoadKw, activeTotalAirflowM3h, airDensityKgM3, airHeatCapacityKjKgK);
+  const outletTemperatureC = ambientTemperatureC + outletDeltaTC;
 
   const warnings = buildCoolingWarnings({
     allowableDeltaTC,
+    calculationMode,
     heatLoadKw,
     maxOutletTemperatureC,
     outletTemperatureC,
+    targetOutletTemperatureC,
     requiredAirflowPerMagnetronM3h,
     targetAirflowPerMagnetronM3h,
     measuredMin: defaults.measuredFanAirflowMinM3h,
@@ -38,8 +47,11 @@ export function calculateMagnetronCooling(defaults) {
     fansPerMagnetron,
     systemPowerKw,
     heatLoadKw,
+    calculationMode,
     targetAirflowPerMagnetronM3h,
     totalTargetAirflowM3h,
+    activeAirflowPerMagnetronM3h,
+    activeTotalAirflowM3h,
     heatLoadPerMagnetronKw,
     allowableDeltaTC,
     outletDeltaTC,
@@ -80,7 +92,7 @@ function buildCoolingWarnings(values) {
     warnings.push({ level: "fail", message: "Outlet temperature limit must be higher than ambient temperature." });
   }
 
-  if (values.outletTemperatureC >= values.maxOutletTemperatureC && values.heatLoadKw > 0) {
+  if (values.calculationMode === "validateTarget" && values.outletTemperatureC >= values.maxOutletTemperatureC && values.heatLoadKw > 0) {
     warnings.push({ level: "fail", message: "Magnetron outlet air is at or above the temperature limit." });
   }
 
@@ -90,6 +102,10 @@ function buildCoolingWarnings(values) {
 
   if (values.requiredAirflowPerMagnetronM3h > values.measuredMax) {
     warnings.push({ level: "warning", message: "Required airflow per magnetron is above the measured fan range." });
+  }
+
+  if (values.calculationMode === "sizeRequired" && values.requiredAirflowPerMagnetronM3h > values.targetAirflowPerMagnetronM3h) {
+    warnings.push({ level: "warning", message: "Required airflow per magnetron is above the entered target airflow." });
   }
 
   return warnings;

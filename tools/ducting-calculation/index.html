@@ -31,7 +31,7 @@
             <p class="section-label">Live reference</p>
             <h2 id="process-overview-title">Process Overview</h2>
           </div>
-          <span class="panel-state">Phase 3</span>
+          <span class="panel-state">Phase 4</span>
         </div>
         <div class="overview-grid">
           <article class="metric-tile">
@@ -111,7 +111,7 @@
       <section class="panel panel-large" aria-labelledby="magnetron-title">
         <div class="panel-header compact">
           <h2 id="magnetron-title">Magnetron Cooling Core</h2>
-          <span class="panel-state">Phase 3</span>
+          <span class="panel-state">Phase 4</span>
         </div>
         <div class="cooling-grid">
           <form class="defaults-form" data-magnetron-form>
@@ -143,6 +143,15 @@
                 <small>kW</small>
               </span>
             </label>
+            <label class="input-row important">
+              <span>Calculation mode</span>
+              <span class="input-control mode-control">
+                <select data-default-input="calculationMode">
+                  <option value="validateTarget">Validate target airflow</option>
+                  <option value="sizeRequired">Size required airflow</option>
+                </select>
+              </span>
+            </label>
             <label class="input-row">
               <span>Target airflow per magnetron</span>
               <span class="input-control">
@@ -154,8 +163,12 @@
 
           <div class="cooling-results" aria-label="Magnetron cooling results">
             <div class="section-row">
-              <strong>Total magnetron airflow</strong>
-              <span><output data-cooling-output="totalTargetAirflowM3h">0</output> m3/h</span>
+              <strong>Active total magnetron airflow</strong>
+              <span><output data-cooling-output="activeTotalAirflowM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row">
+              <strong>Active airflow per magnetron</strong>
+              <span><output data-cooling-output="activeAirflowPerMagnetronM3h">0</output> m3/h</span>
             </div>
             <div class="section-row">
               <strong>Heat load per magnetron</strong>
@@ -262,6 +275,6 @@
     </section>
   </main>
 
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="./app.js?v=phase4"></script>
 </body>
 </html>

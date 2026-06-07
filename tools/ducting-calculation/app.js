@@ -18,7 +18,7 @@ const elements = {
 
 const COOLING_STATUS_TEXT = Object.freeze({
   pass: "Below limit",
-  warning: "Needs input",
+  warning: "Check warnings",
   fail: "Hard fail"
 });
 
