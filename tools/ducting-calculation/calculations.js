@@ -1,4 +1,5 @@
 const SECONDS_PER_HOUR = 3600;
+const M3H_PER_CFM = 1.69901082;
 
 export function calculateMagnetronCooling(defaults) {
   const magnetronCount = positiveNumber(defaults.magnetronCount);
@@ -10,8 +11,10 @@ export function calculateMagnetronCooling(defaults) {
   const maxOutletTemperatureC = numberOrZero(defaults.maxOutletTemperatureC);
   const airDensityKgM3 = positiveNumber(defaults.airDensityKgM3);
   const airHeatCapacityKjKgK = positiveNumber(defaults.airHeatCapacityKjKgK);
+  const fanFreeflowCfm = positiveNumber(defaults.fanFreeflowCfm);
 
   const allowableDeltaTC = maxOutletTemperatureC - ambientTemperatureC;
+  const fanFreeflowM3h = fanFreeflowCfm * M3H_PER_CFM;
   const totalTargetAirflowM3h = magnetronCount * targetAirflowPerMagnetronM3h;
   const heatLoadPerMagnetronKw = magnetronCount > 0 ? heatLoadKw / magnetronCount : 0;
   const outletDeltaTC = calculateDeltaT(heatLoadKw, totalTargetAirflowM3h, airDensityKgM3, airHeatCapacityKjKgK);
@@ -43,6 +46,7 @@ export function calculateMagnetronCooling(defaults) {
     outletTemperatureC,
     requiredTotalAirflowM3h,
     requiredAirflowPerMagnetronM3h,
+    fanFreeflowM3h,
     status: getCoolingStatus(warnings),
     warnings
   };
@@ -81,7 +85,7 @@ function buildCoolingWarnings(values) {
   }
 
   if (values.targetAirflowPerMagnetronM3h < values.measuredMin || values.targetAirflowPerMagnetronM3h > values.measuredMax) {
-    warnings.push({ level: "warning", message: "Target airflow per magnetron is outside the measured 45 to 70 m3/h range." });
+    warnings.push({ level: "warning", message: `Target airflow per magnetron is outside the measured ${values.measuredMin} to ${values.measuredMax} m3/h range.` });
   }
 
   if (values.requiredAirflowPerMagnetronM3h > values.measuredMax) {

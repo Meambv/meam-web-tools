@@ -40,7 +40,7 @@ a {
   width: min(100%, 1920px);
   min-height: 100vh;
   margin: 0 auto;
-  padding: 24px;
+  padding: 14px;
 }
 
 .topbar {
@@ -48,8 +48,8 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  min-height: 84px;
-  padding: 18px 22px;
+  min-height: 70px;
+  padding: 12px 16px;
   background: rgba(13, 23, 38, 0.92);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -73,7 +73,7 @@ h2 {
 }
 
 h1 {
-  font-size: 2.15rem;
+  font-size: 1.85rem;
   letter-spacing: 0;
 }
 
@@ -143,8 +143,8 @@ h2 {
 }
 
 .notice {
-  margin-top: 14px;
-  padding: 12px 14px;
+  margin-top: 10px;
+  padding: 9px 12px;
   color: #c8f7ff;
   background: rgba(56, 189, 248, 0.09);
   border: 1px solid rgba(56, 189, 248, 0.18);
@@ -160,14 +160,14 @@ h2 {
 .workspace-grid {
   display: grid;
   grid-template-columns: minmax(560px, 1.45fr) minmax(390px, 0.9fr) minmax(360px, 0.75fr);
-  grid-auto-rows: minmax(240px, auto);
-  gap: 16px;
-  margin-top: 16px;
+  grid-auto-rows: minmax(190px, auto);
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .panel {
   min-width: 0;
-  padding: 18px;
+  padding: 12px;
   background: rgba(13, 23, 38, 0.88);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -188,7 +188,7 @@ h2 {
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .panel-header.compact {
@@ -216,8 +216,8 @@ h2 {
 }
 
 .metric-tile {
-  min-height: 132px;
-  padding: 16px;
+  min-height: 92px;
+  padding: 12px;
   background: var(--surface-soft);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -236,7 +236,7 @@ h2 {
 
 .metric-label {
   display: block;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -245,7 +245,7 @@ h2 {
 
 .metric-tile strong {
   display: block;
-  font-size: 2rem;
+  font-size: 1.65rem;
   line-height: 1;
 }
 
@@ -258,7 +258,7 @@ h2 {
 .definition-list,
 .defaults-form {
   display: grid;
-  gap: 12px;
+  gap: 8px;
   margin: 0;
 }
 
@@ -268,8 +268,8 @@ h2 {
 .status-line {
   display: flex;
   justify-content: space-between;
-  gap: 14px;
-  padding: 12px;
+  gap: 10px;
+  padding: 8px 10px;
   background: rgba(17, 31, 51, 0.72);
   border: 1px solid rgba(148, 163, 184, 0.24);
   border-radius: 8px;
@@ -290,7 +290,7 @@ h2 {
 .input-row {
   align-items: center;
   color: var(--muted);
-  font-size: 0.94rem;
+  font-size: 0.88rem;
 }
 
 .input-row.important {
@@ -307,7 +307,7 @@ h2 {
 
 .input-control input {
   width: 100%;
-  height: 34px;
+  height: 28px;
   padding: 0 9px;
   color: var(--text);
   background: rgba(5, 10, 19, 0.78);
@@ -331,12 +331,12 @@ h2 {
 .cooling-grid {
   display: grid;
   grid-template-columns: minmax(360px, 0.86fr) minmax(440px, 1.14fr);
-  gap: 14px;
+  gap: 10px;
 }
 
 .cooling-results {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   align-content: start;
 }
 
@@ -346,31 +346,34 @@ output {
   color: var(--text);
 }
 
-.fact-grid {
+.reference-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(180px, 1fr));
-  gap: 8px;
-  margin-top: 4px;
+  gap: 6px;
+  margin-top: 2px;
 }
 
-.fact-grid span {
-  min-height: 36px;
-  padding: 9px 10px;
-  color: var(--muted);
-  background: rgba(5, 10, 19, 0.46);
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 8px;
+.compact-row {
+  min-height: 32px;
+  padding: 6px 8px;
 }
 
-.fact-grid strong {
-  color: var(--text);
-  font-weight: 800;
+.wide-row {
+  grid-column: span 2;
+}
+
+.compact-control {
+  grid-template-columns: minmax(68px, 84px) minmax(48px, auto);
+}
+
+.conversion-control {
+  grid-template-columns: minmax(80px, 96px) minmax(140px, auto);
 }
 
 .section-stack,
 .status-board {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .section-row {
@@ -425,7 +428,7 @@ output {
 }
 
 .panel-note {
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   line-height: 1.55;
 }
 

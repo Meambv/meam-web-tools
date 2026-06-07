@@ -17,7 +17,7 @@ export const DEFAULTS = Object.freeze({
   measuredFanAirflowMinM3h: 45,
   measuredFanAirflowMaxM3h: 70,
   restrictedFanAirflowM3h: 50,
-  fanFreeflowCfm: 135,
+  fanFreeflowCfm: 116.6,
   restrictionPressureLossPa: 50,
   restrictionHoleCount: 40,
   restrictionHoleWidthMm: 9,

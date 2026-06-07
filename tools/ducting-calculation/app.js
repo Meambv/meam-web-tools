@@ -77,7 +77,7 @@ function renderMagnetronCooling(state) {
     const value = state.magnetronCooling[key];
 
     if (value !== undefined) {
-      output.textContent = formatNumber(value);
+      output.textContent = formatNumber(value, key);
     }
   });
 
@@ -98,9 +98,13 @@ function renderCoolingWarnings(warnings) {
   });
 }
 
-function formatNumber(value) {
+function formatNumber(value, key = "") {
   if (!Number.isFinite(value)) {
     return "0";
+  }
+
+  if (key.toLowerCase().includes("freeflow")) {
+    return value.toFixed(1);
   }
 
   return new Intl.NumberFormat("en-US", {
