@@ -12,6 +12,19 @@ export function updateSharedState(patch) {
   notifySubscribers();
 }
 
+export function updateDefaultValue(key, value) {
+  sharedState.defaults = {
+    ...sharedState.defaults,
+    [key]: value
+  };
+  notifySubscribers();
+}
+
+export function resetDefaults() {
+  sharedState.defaults = { ...DEFAULTS };
+  notifySubscribers();
+}
+
 export function subscribeToSharedState(callback) {
   subscribers.add(callback);
   callback(sharedState);

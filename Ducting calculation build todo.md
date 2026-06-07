@@ -33,13 +33,13 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 ## Phase 2: Editable Defaults Panel
 
-- [ ] Add inputs for default ambient temperature, default 20 degrees C.
-- [ ] Add input for maximum magnetron outlet temperature, default 50 degrees C.
-- [ ] Add input for target cavity pressure, default -20 Pa.
-- [ ] Add input for air density.
-- [ ] Add input for air heat capacity.
-- [ ] Add input for airflow tolerance band, default plus or minus 10 percent.
-- [ ] Add reset-to-defaults button.
+- [x] Add inputs for default ambient temperature, default 20 degrees C.
+- [x] Add input for maximum magnetron outlet temperature, default 50 degrees C.
+- [x] Add input for target cavity pressure, default -20 Pa.
+- [x] Add input for air density.
+- [x] Add input for air heat capacity.
+- [x] Add input for airflow tolerance band, default plus or minus 10 percent.
+- [x] Add reset-to-defaults button.
 
 ## Phase 3: Magnetron Cooling Core
 
@@ -161,5 +161,6 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 ## Immediate Next Step
 
-- [ ] Implement Phase 0 and Phase 1 only.
-- [ ] Stop and verify the desktop shell before adding calculations.
+- [x] Implement Phase 0 and Phase 1 only.
+- [x] Stop and verify the desktop shell before adding calculations.
+- [ ] Implement Phase 3 magnetron cooling core.

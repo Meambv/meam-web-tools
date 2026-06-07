@@ -8,6 +8,8 @@ export const DEFAULTS = Object.freeze({
   ambientTemperatureC: 20,
   maxOutletTemperatureC: 50,
   targetCavityPressurePa: -20,
+  airDensityKgM3: 1.2,
+  airHeatCapacityKjKgK: 1.006,
   fanModel: "GEA1238B28N30",
   defaultFanAirflowM3h: 57.5,
   measuredFanAirflowMinM3h: 45,

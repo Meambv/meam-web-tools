@@ -60,26 +60,52 @@
       <section class="panel" aria-labelledby="defaults-title">
         <div class="panel-header compact">
           <h2 id="defaults-title">Editable Defaults</h2>
-          <span class="panel-state">Next</span>
+          <button class="small-button" type="button" data-reset-defaults>Reset defaults</button>
         </div>
-        <dl class="definition-list">
-          <div>
-            <dt>Ambient temperature</dt>
-            <dd><span data-default="ambientTemperatureC">20</span> degrees C</dd>
-          </div>
-          <div>
-            <dt>Fan model</dt>
-            <dd data-default="fanModel">GEA1238B28N30</dd>
-          </div>
-          <div>
-            <dt>Default airflow</dt>
-            <dd><span data-default="defaultFanAirflowM3h">57.5</span> m3/h</dd>
-          </div>
-          <div>
-            <dt>Measured restricted flow</dt>
-            <dd><span data-default="restrictedFanAirflowM3h">50</span> m3/h at <span data-default="restrictionPressureLossPa">50</span> Pa</dd>
-          </div>
-        </dl>
+        <form class="defaults-form" data-defaults-form>
+          <label class="input-row">
+            <span>Ambient temperature</span>
+            <span class="input-control">
+              <input data-default-input="ambientTemperatureC" type="number" step="0.1" value="20" />
+              <small>degrees C</small>
+            </span>
+          </label>
+          <label class="input-row">
+            <span>Outlet temperature limit</span>
+            <span class="input-control">
+              <input data-default-input="maxOutletTemperatureC" type="number" step="0.1" value="50" />
+              <small>degrees C</small>
+            </span>
+          </label>
+          <label class="input-row">
+            <span>Target cavity pressure</span>
+            <span class="input-control">
+              <input data-default-input="targetCavityPressurePa" type="number" step="1" value="-20" />
+              <small>Pa</small>
+            </span>
+          </label>
+          <label class="input-row">
+            <span>Air density</span>
+            <span class="input-control">
+              <input data-default-input="airDensityKgM3" type="number" step="0.001" value="1.2" />
+              <small>kg/m3</small>
+            </span>
+          </label>
+          <label class="input-row">
+            <span>Air heat capacity</span>
+            <span class="input-control">
+              <input data-default-input="airHeatCapacityKjKgK" type="number" step="0.001" value="1.006" />
+              <small>kJ/kgK</small>
+            </span>
+          </label>
+          <label class="input-row">
+            <span>Airflow tolerance band</span>
+            <span class="input-control">
+              <input data-default-input="airflowTolerancePercent" type="number" step="0.5" value="10" />
+              <small>%</small>
+            </span>
+          </label>
+        </form>
       </section>
 
       <section class="panel" aria-labelledby="inputs-title">
