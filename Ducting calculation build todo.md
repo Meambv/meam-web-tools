@@ -109,9 +109,13 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Mark VFD estimates as indicative because real fan speed is PLC PID controlled.
 - [x] Use PLC pressure target range of about -2 to -10 Pa.
 - [ ] Add relative humidity and temperature inputs for extraction control.
+- [ ] Add editable absolute moisture weight input for extraction control, for example g water/kg dry air.
+- [ ] Calculate humid-air volume increase from extraction temperature and absolute moisture weight.
+- [ ] Show dry-airflow target and corrected wet-air volume flow separately.
 - [ ] Add cavity pressure target and serial airflow target as extraction control inputs.
 - [ ] Warn if extraction pull is too low for negative pressure, humidity removal, or magnetron temperature control.
 - [ ] Warn if extraction pull is too high and likely reduces useful convection/residence behavior.
+- [ ] Warn if moisture/temperature expansion makes extraction fan capacity or VFD estimate insufficient.
 - [ ] Add fan grouping field or selector.
 - [ ] Add control mode: humidity based, temperature based, or fixed.
 - [ ] Calculate total extraction airflow.

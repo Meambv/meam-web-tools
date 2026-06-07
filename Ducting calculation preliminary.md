@@ -251,6 +251,10 @@ Inputs:
 - Fan grouping, if multiple fans share one duct system
 - Airflow per fan or fan group
 - Target pressure before and after fan group
+- Extraction air temperature
+- Extraction relative humidity
+- Absolute moisture weight, for example g water/kg dry air
+- Dry-airflow target and corrected wet-air volume flow
 - Ducting per fan or fan group
 - Control mode note: humidity based, temperature based, or fixed
 
@@ -262,6 +266,9 @@ Rules and warnings:
 - The tool should warn when extraction pull is likely too high for the desired convection/residence behavior in the cavity.
 - The tool should warn when extraction pull is likely too low for humidity containment or magnetron temperature control.
 - Extraction control should later include relative humidity and temperature because downstream airflow demand depends on both process moisture and heat removal.
+- Extraction control must include absolute moisture weight as an editable value. Temperature and absolute moisture content together can increase the actual extraction volume flow significantly, so the extraction calculation should distinguish dry-airflow target from corrected humid-air volume flow.
+- The extraction fan VFD estimate should use the corrected humid-air volume flow when checking fan capacity, while still showing that the result is indicative and the real machine is controlled by PLC PID.
+- The tool should warn if moisture and temperature expansion push the extraction demand above nominal 50 Hz capacity or toward/above the 60 Hz ramp allowance.
 
 Extraction temperature and humidity should be treated by extraction area. The air is expected to become warmer and more humid along the extraction path. As a first simplifying assumption, the tool may treat the target extraction temperature as the same across all extraction areas, while still allowing humidity and load distribution to be refined later.
 
