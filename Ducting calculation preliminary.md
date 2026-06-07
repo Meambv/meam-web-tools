@@ -104,6 +104,30 @@ Reference fan specification:
 
 The heat load fraction from the magnetron system into the cooling air should be entered manually. The tool should not assume that 100 percent of the 300 kW becomes cooling-air heat unless the user enters that value.
 
+## Serial Airflow And Control Principle
+
+The machine airflow is a serial process, not a set of independent parallel fan systems.
+
+Primary controlled values:
+
+- Required airflow through the process cavity
+- Required negative pressure in the cavity relative to ambient
+- Magnetron outlet temperature below 50 degrees C
+- Enough convection in the cavity to heat the material properly
+- Enough extraction to remove humidity without pulling so hard that useful convection is lost
+
+Control principle:
+
+- Upstream push fans mainly provide air to the machine inlet side.
+- Push fans must not push so hard that the cavity can no longer stay below ambient pressure.
+- Magnetron cooling air enters the serial cavity stream and adds heat.
+- Downstream extraction fans are the main control element for cavity pressure, humidity removal, and the final process airflow.
+- If extraction fans pull too weakly, the cavity can lose negative pressure, humidity can escape, and magnetron outlet temperature can rise.
+- If extraction fans pull too strongly, the process can lose useful convection/residence advantage for heating the material.
+- The practical control target is a continuous balance between upstream air supply and downstream extraction, with downstream control being more critical.
+
+The tool should therefore treat extraction as a controlled downstream actuator, not just as a static airflow total. VFD setting, fan curve, cavity pressure target, magnetron temperature limit, and process convection should be evaluated together.
+
 ## Main Calculation Sections
 
 ### 1. Push Inlets
@@ -217,9 +241,11 @@ Inputs:
 
 Rules and warnings:
 
-- Extraction airflow should exceed push inlet airflow plus magnetron cooling airflow by a suitable margin, but the default margin still needs to be defined from the process model.
+- Extraction airflow should be controlled to maintain the required cavity pressure and process airflow. It should not be modeled as simply exceeding a parallel sum of push airflow and magnetron cooling airflow.
 - Extraction must maintain the desired negative cavity pressure.
 - The tool should flag configurations where extraction cannot maintain below-ambient pressure.
+- The tool should warn when extraction pull is likely too high for the desired convection/residence behavior in the cavity.
+- The tool should warn when extraction pull is likely too low for humidity containment or magnetron temperature control.
 
 Extraction temperature and humidity should be treated by extraction area. The air is expected to become warmer and more humid along the extraction path. As a first simplifying assumption, the tool may treat the target extraction temperature as the same across all extraction areas, while still allowing humidity and load distribution to be refined later.
 
@@ -267,21 +293,22 @@ The tool should calculate and show a process balance summary:
 
 - Total push inlet airflow
 - Total magnetron cooling airflow
-- Total air entering the cavity
+- Serial cavity airflow
 - Total extraction airflow
-- Net extraction margin, if a margin target has been selected
+- Extraction control margin relative to serial cavity airflow and pressure target
 - Target cavity pressure
 - Pressure status relative to ambient
 - Main warnings
 
-Initial balance principle:
+Serial balance principle:
 
 ```text
-total_inflow = push_airflow + magnetron_cooling_airflow
-extraction_margin = extraction_airflow - total_inflow
+serial_cavity_airflow = governing process airflow through the cavity
+push_airflow should be sufficient to feed the serial stream without pressurizing the cavity
+extraction airflow and VFD setting should control cavity pressure, humidity removal, and convection behavior
 ```
 
-The extraction margin should normally be positive to keep the cavity below ambient pressure. The default margin should remain editable and may need to be based on extraction area behavior rather than one fixed percentage.
+The extraction margin should remain editable and may need to be based on extraction area behavior rather than one fixed percentage. It should be treated as a control band, not a fixed oversizing rule.
 
 The main cooling chain for the first version is:
 
@@ -298,7 +325,8 @@ The first version should include warnings for:
 
 - Pressure after push inlets above ambient
 - Cavity pressure above or too close to ambient
-- Extraction airflow lower than push airflow plus magnetron cooling airflow
+- Extraction airflow too low to maintain negative cavity pressure, humidity removal, or magnetron temperature control
+- Extraction airflow too high for useful material-heating convection/residence behavior
 - Magnetron outlet temperature outside allowed range
 - Magnetron outlet temperature at or above 50 degrees C
 - Possible humidity escape from the open tunnel

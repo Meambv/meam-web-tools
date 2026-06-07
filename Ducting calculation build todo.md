@@ -95,6 +95,7 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 ## Phase 7: Extraction Fan Section
 
+- [ ] Treat extraction as downstream control, not as a simple fan total.
 - [ ] Add number of extraction fans.
 - [ ] Add airflow per extraction fan.
 - [ ] Add power per extraction fan.
@@ -102,20 +103,23 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [ ] Add fan-curve data entry for IRT/4-450 airflow versus static pressure.
 - [ ] Add VFD frequency estimate from required airflow and static pressure.
 - [ ] Warn when required operation exceeds 50 Hz and depends on ramping toward 60 Hz.
+- [ ] Add cavity pressure target and serial airflow target as extraction control inputs.
+- [ ] Warn if extraction pull is too low for negative pressure, humidity removal, or magnetron temperature control.
+- [ ] Warn if extraction pull is too high and likely reduces useful convection/residence behavior.
 - [ ] Add fan grouping field or selector.
 - [ ] Add control mode: humidity based, temperature based, or fixed.
 - [ ] Calculate total extraction airflow.
-- [ ] Compare extraction airflow against total inflow.
-- [ ] Show extraction surplus or shortage.
+- [ ] Compare extraction airflow against serial cavity airflow and pressure target.
+- [ ] Show extraction control margin or shortage.
 - [ ] Keep extraction margin editable or clearly undefined until the model is chosen.
 
 ## Phase 8: First Results Summary
 
 - [ ] Show total push inlet airflow.
 - [ ] Show total magnetron cooling airflow.
-- [ ] Show total air entering cavity.
+- [ ] Show serial cavity airflow.
 - [ ] Show total extraction airflow.
-- [ ] Show extraction surplus or shortage.
+- [ ] Show extraction control margin or shortage.
 - [ ] Show magnetron outlet temperature status.
 - [ ] Show cavity pressure status.
 - [ ] Show overall pass, warning, or fail state.
