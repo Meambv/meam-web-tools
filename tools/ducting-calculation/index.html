@@ -435,8 +435,8 @@
           </form>
           <div class="section-stack" aria-label="Cavity balance results">
             <div class="section-row">
-              <strong>Total inflow to cavity</strong>
-              <span><output data-cavity-output="totalInflowM3h">0</output> m3/h</span>
+              <strong>Serial cavity airflow</strong>
+              <span><output data-cavity-output="serialCavityAirflowM3h">0</output> m3/h</span>
             </div>
             <div class="section-row">
               <strong>Magnetron airflow</strong>
@@ -445,6 +445,10 @@
             <div class="section-row">
               <strong>Push airflow</strong>
               <span><output data-cavity-output="pushAirflowM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row" data-flow-delta-row>
+              <strong>Push minus magnetron flow</strong>
+              <span><output data-cavity-output="pushMagnetronFlowDeltaM3h">0</output> m3/h</span>
             </div>
             <div class="section-row">
               <strong>Cavity volume</strong>

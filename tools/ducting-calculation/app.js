@@ -25,7 +25,8 @@ const elements = {
   cavityStatus: document.querySelector("[data-cavity-status]"),
   cavityWarnings: document.querySelector("[data-cavity-warnings]"),
   cavityPressureRow: document.querySelector("[data-cavity-pressure-row]"),
-  openingAreaRow: document.querySelector("[data-opening-area-row]")
+  openingAreaRow: document.querySelector("[data-opening-area-row]"),
+  flowDeltaRow: document.querySelector("[data-flow-delta-row]")
 };
 
 const COOLING_STATUS_TEXT = Object.freeze({
@@ -138,6 +139,7 @@ function renderCavityBalance(state) {
   elements.cavityStatusLine.classList.add(state.cavityBalance.status);
   elements.cavityPressureRow.classList.toggle("over-target", state.cavityBalance.targetCavityPressurePa >= 0);
   elements.openingAreaRow.classList.toggle("over-target", state.cavityBalance.requiredOpeningAreaM2 > 0 && state.cavityBalance.magnetronAirOpeningAreaM2 < state.cavityBalance.requiredOpeningAreaM2);
+  elements.flowDeltaRow.classList.toggle("over-target", state.cavityBalance.pushMagnetronFlowDeltaM3h < 0);
   renderWarningList(elements.cavityWarnings, state.cavityBalance.warnings);
 }
 

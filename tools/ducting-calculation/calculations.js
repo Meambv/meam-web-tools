@@ -183,7 +183,8 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
   const magnetronAirOpeningAreaM2 = magnetronAirOpeningLengthM * magnetronAirOpeningWidthM;
   const magnetronAirflowM3h = positiveNumber(magnetronCooling.activeTotalAirflowM3h);
   const pushAirflowM3h = positiveNumber(pushInlets.totalPushAirflowM3h);
-  const totalInflowM3h = magnetronAirflowM3h + pushAirflowM3h;
+  const serialCavityAirflowM3h = Math.max(magnetronAirflowM3h, pushAirflowM3h);
+  const pushMagnetronFlowDeltaM3h = pushAirflowM3h - magnetronAirflowM3h;
   const requiredOpeningAreaM2 = maxMagnetronOpeningVelocityMs > 0
     ? (magnetronAirflowM3h / SECONDS_PER_HOUR) / maxMagnetronOpeningVelocityMs
     : 0;
@@ -208,6 +209,10 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     warnings.push({ level: "fail", message: "Magnetron-air opening area is below the area required for the selected velocity limit." });
   }
 
+  if (pushAirflowM3h < magnetronAirflowM3h) {
+    warnings.push({ level: "warning", message: "Push airflow is below the magnetron airflow requirement in the serial process line." });
+  }
+
   return {
     targetCavityPressurePa,
     cavityLengthM,
@@ -222,7 +227,8 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     openingVelocityMs,
     magnetronAirflowM3h,
     pushAirflowM3h,
-    totalInflowM3h,
+    serialCavityAirflowM3h,
+    pushMagnetronFlowDeltaM3h,
     status: getCoolingStatus(warnings),
     warnings
   };

@@ -88,8 +88,8 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Add magnetron-air opening length and width.
 - [x] Calculate magnetron-air opening area.
 - [x] Alarm if magnetron-air opening area is below required area.
-- [x] Calculate total inflow to cavity.
-- [x] Show push airflow plus magnetron cooling airflow.
+- [x] Calculate serial cavity airflow without adding push and magnetron flows as parallel streams.
+- [x] Show push airflow, magnetron airflow, and the serial flow difference.
 - [x] Warn if cavity target is not below ambient.
 - [x] Warn if humidity containment is likely unsafe.
 

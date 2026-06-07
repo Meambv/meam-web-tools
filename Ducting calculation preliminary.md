@@ -199,7 +199,7 @@ Rules and warnings:
 - The cavity pressure must stay below ambient.
 - The default target cavity pressure should be -20 Pa relative to ambient.
 - The target pressure should be negative enough to prevent humidity escaping.
-- The tool should warn if push air plus magnetron cooling air is greater than the extraction capacity.
+- The cavity is a serial process line. Do not add push airflow and magnetron airflow as parallel streams for the cavity airflow. Use the governing serial airflow and warn when the push airflow is below the magnetron airflow requirement.
 - The tool should calculate the magnetron-air opening area and alarm if the area is below what is needed for the selected magnetron airflow and velocity limit.
 
 ### 4. Extraction Fans
