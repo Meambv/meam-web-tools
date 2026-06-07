@@ -352,6 +352,13 @@ h2 {
   padding: 6px;
 }
 
+.split-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+  gap: 6px;
+  padding: 6px;
+}
+
 .cooling-results {
   display: grid;
   gap: 1px;
@@ -427,6 +434,12 @@ output {
 
 .status-line.fail {
   box-shadow: inset 4px 0 0 var(--danger);
+}
+
+.section-row.over-target output,
+.section-row.over-target span {
+  color: var(--danger);
+  font-weight: 800;
 }
 
 .warning-list {

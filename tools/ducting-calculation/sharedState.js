@@ -1,12 +1,13 @@
 import { DEFAULTS } from "./constants.js";
-import { calculateMagnetronCooling } from "./calculations.js";
+import { calculateMagnetronCooling, calculatePushInlets } from "./calculations.js";
 
 const subscribers = new Set();
 
 export const sharedState = {
   accessGranted: false,
   defaults: { ...DEFAULTS },
-  magnetronCooling: calculateMagnetronCooling(DEFAULTS)
+  magnetronCooling: calculateMagnetronCooling(DEFAULTS),
+  pushInlets: calculatePushInlets(DEFAULTS)
 };
 
 export function updateSharedState(patch) {
@@ -42,4 +43,5 @@ function notifySubscribers() {
 
 function updateCalculatedState() {
   sharedState.magnetronCooling = calculateMagnetronCooling(sharedState.defaults);
+  sharedState.pushInlets = calculatePushInlets(sharedState.defaults);
 }

@@ -13,9 +13,11 @@ export function calculateMagnetronCooling(defaults) {
   const airDensityKgM3 = positiveNumber(defaults.airDensityKgM3);
   const airHeatCapacityKjKgK = positiveNumber(defaults.airHeatCapacityKjKgK);
   const fanFreeflowCfm = positiveNumber(defaults.fanFreeflowCfm);
+  const fanPowerW = positiveNumber(defaults.fanPowerW);
 
   const allowableDeltaTC = maxOutletTemperatureC - ambientTemperatureC;
   const fanFreeflowM3h = fanFreeflowCfm * M3H_PER_CFM;
+  const totalFanPowerKw = (magnetronCount * fansPerMagnetron * fanPowerW) / 1000;
   const totalTargetAirflowM3h = magnetronCount * targetAirflowPerMagnetronM3h;
   const heatLoadPerMagnetronKw = magnetronCount > 0 ? heatLoadKw / magnetronCount : 0;
   const targetOutletDeltaTC = calculateDeltaT(heatLoadKw, totalTargetAirflowM3h, airDensityKgM3, airHeatCapacityKjKgK);
@@ -59,6 +61,7 @@ export function calculateMagnetronCooling(defaults) {
     requiredTotalAirflowM3h,
     requiredAirflowPerMagnetronM3h,
     fanFreeflowM3h,
+    totalFanPowerKw,
     status: getCoolingStatus(warnings),
     warnings
   };
@@ -131,4 +134,39 @@ function positiveNumber(value) {
 function numberOrZero(value) {
   const number = Number(value);
   return Number.isFinite(number) ? number : 0;
+}
+
+export function calculatePushInlets(defaults) {
+  const pushInletCount = positiveNumber(defaults.pushInletCount);
+  const pushAirflowPerInletM3h = positiveNumber(defaults.pushAirflowPerInletM3h);
+  const pushInletFanPowerW = positiveNumber(defaults.pushInletFanPowerW);
+  const pushInletTemperatureC = numberOrZero(defaults.pushInletTemperatureC);
+  const pushInletDeltaPPa = numberOrZero(defaults.pushInletDeltaPPa);
+  const totalPushAirflowM3h = pushInletCount * pushAirflowPerInletM3h;
+  const totalPushFanPowerKw = (pushInletCount * pushInletFanPowerW) / 1000;
+  const warnings = [];
+
+  if (pushInletCount <= 0) {
+    warnings.push({ level: "warning", message: "Enter the number of push inlets." });
+  }
+
+  if (pushAirflowPerInletM3h <= 0) {
+    warnings.push({ level: "warning", message: "Enter the airflow per push inlet." });
+  }
+
+  if (pushInletDeltaPPa >= 0) {
+    warnings.push({ level: "warning", message: "Pressure after push inlets should stay below ambient." });
+  }
+
+  return {
+    pushInletCount,
+    pushAirflowPerInletM3h,
+    pushInletFanPowerW,
+    pushInletTemperatureC,
+    pushInletDeltaPPa,
+    totalPushAirflowM3h,
+    totalPushFanPowerKw,
+    status: warnings.length > 0 ? "warning" : "pass",
+    warnings
+  };
 }

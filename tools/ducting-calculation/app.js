@@ -13,11 +13,23 @@ const elements = {
   coolingOutputs: document.querySelectorAll("[data-cooling-output]"),
   coolingStatusLine: document.querySelector("[data-cooling-status-line]"),
   coolingStatus: document.querySelector("[data-cooling-status]"),
-  coolingWarnings: document.querySelector("[data-cooling-warnings]")
+  coolingWarnings: document.querySelector("[data-cooling-warnings]"),
+  requiredAirflowRow: document.querySelector("[data-required-airflow-row]"),
+  pushOutputs: document.querySelectorAll("[data-push-output]"),
+  pushStatusLine: document.querySelector("[data-push-status-line]"),
+  pushStatus: document.querySelector("[data-push-status]"),
+  pushWarnings: document.querySelector("[data-push-warnings]"),
+  pushPressureRow: document.querySelector("[data-push-pressure-row]")
 };
 
 const COOLING_STATUS_TEXT = Object.freeze({
   pass: "Below limit",
+  warning: "Check warnings",
+  fail: "Hard fail"
+});
+
+const SIMPLE_STATUS_TEXT = Object.freeze({
+  pass: "OK",
   warning: "Check warnings",
   fail: "Hard fail"
 });
@@ -84,17 +96,39 @@ function renderMagnetronCooling(state) {
   elements.coolingStatus.textContent = COOLING_STATUS_TEXT[state.magnetronCooling.status];
   elements.coolingStatusLine.classList.remove("neutral", "pass", "warning", "fail");
   elements.coolingStatusLine.classList.add(state.magnetronCooling.status);
+  elements.requiredAirflowRow.classList.toggle("over-target", state.magnetronCooling.requiredAirflowPerMagnetronM3h > state.magnetronCooling.targetAirflowPerMagnetronM3h);
   renderCoolingWarnings(state.magnetronCooling.warnings);
 }
 
+function renderPushInlets(state) {
+  elements.pushOutputs.forEach((output) => {
+    const key = output.dataset.pushOutput;
+    const value = state.pushInlets[key];
+
+    if (value !== undefined) {
+      output.textContent = formatNumber(value, key);
+    }
+  });
+
+  elements.pushStatus.textContent = SIMPLE_STATUS_TEXT[state.pushInlets.status];
+  elements.pushStatusLine.classList.remove("neutral", "pass", "warning", "fail");
+  elements.pushStatusLine.classList.add(state.pushInlets.status);
+  elements.pushPressureRow.classList.toggle("over-target", state.pushInlets.pushInletDeltaPPa >= 0);
+  renderWarningList(elements.pushWarnings, state.pushInlets.warnings);
+}
+
 function renderCoolingWarnings(warnings) {
-  elements.coolingWarnings.replaceChildren();
+  renderWarningList(elements.coolingWarnings, warnings);
+}
+
+function renderWarningList(list, warnings) {
+  list.replaceChildren();
 
   warnings.forEach((warning) => {
     const item = document.createElement("li");
     item.className = warning.level;
     item.textContent = warning.message;
-    elements.coolingWarnings.append(item);
+    list.append(item);
   });
 }
 
@@ -133,6 +167,7 @@ function initializeApp() {
   subscribeToSharedState(renderAccessState);
   subscribeToSharedState(renderDefaults);
   subscribeToSharedState(renderMagnetronCooling);
+  subscribeToSharedState(renderPushInlets);
   bindDefaultInputs();
 
   const accessGranted = hasValidAccess();

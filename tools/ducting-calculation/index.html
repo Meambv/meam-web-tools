@@ -105,6 +105,13 @@
               <small>%</small>
             </span>
           </label>
+          <label class="input-row">
+            <span>Outlet fan power default</span>
+            <span class="input-control">
+              <input data-default-input="extractionFanPowerW" type="number" step="0.1" min="0" value="0" />
+              <small>W/fan</small>
+            </span>
+          </label>
         </form>
       </section>
 
@@ -137,7 +144,7 @@
               </span>
             </label>
             <label class="input-row important">
-              <span>Heat load to cooling air</span>
+              <span>Total heat load to cooling air</span>
               <span class="input-control">
                 <input data-default-input="heatLoadKw" type="number" step="1" min="0" value="0" />
                 <small>kW</small>
@@ -163,22 +170,26 @@
 
           <div class="cooling-results" aria-label="Magnetron cooling results">
             <div class="section-row">
-              <strong>Active total magnetron airflow</strong>
+              <strong>Required total magnetron airflow</strong>
               <span><output data-cooling-output="activeTotalAirflowM3h">0</output> m3/h</span>
             </div>
             <div class="section-row">
-              <strong>Active airflow per magnetron</strong>
+              <strong>Required airflow per magnetron</strong>
               <span><output data-cooling-output="activeAirflowPerMagnetronM3h">0</output> m3/h</span>
             </div>
             <div class="section-row">
-              <strong>Heat load per magnetron</strong>
+              <strong>Heat load per magnetron (calculated)</strong>
               <span><output data-cooling-output="heatLoadPerMagnetronKw">0</output> kW</span>
             </div>
             <div class="section-row">
-              <strong>Outlet air temperature</strong>
-              <span><output data-cooling-output="outletTemperatureC">20</output> degrees C</span>
+              <strong>Total magnetron fan power</strong>
+              <span><output data-cooling-output="totalFanPowerKw">0</output> kW</span>
             </div>
             <div class="section-row">
+              <strong>Calculated outlet air temperature</strong>
+              <span><output data-cooling-output="outletTemperatureC">20</output> degrees C</span>
+            </div>
+            <div class="section-row" data-required-airflow-row>
               <strong>Required airflow per magnetron</strong>
               <span><output data-cooling-output="requiredAirflowPerMagnetronM3h">0</output> m3/h</span>
             </div>
@@ -209,6 +220,13 @@
                 <span class="input-control conversion-control">
                   <input data-default-input="fanFreeflowCfm" type="number" step="0.1" min="0" value="116.6" />
                   <small>CFM = <output data-cooling-output="fanFreeflowM3h">198.1</output> m3/h</small>
+                </span>
+              </label>
+              <label class="input-row compact-row">
+                <span>Power per fan</span>
+                <span class="input-control compact-control">
+                  <input data-default-input="fanPowerW" type="number" step="0.1" min="0" value="0" />
+                  <small>W</small>
                 </span>
               </label>
               <label class="input-row compact-row">
@@ -244,6 +262,70 @@
         </div>
       </section>
 
+      <section class="panel" aria-labelledby="push-title">
+        <div class="panel-header compact">
+          <h2 id="push-title">Push Inlets</h2>
+          <span class="panel-state">Phase 5</span>
+        </div>
+        <div class="split-grid">
+          <form class="defaults-form" data-push-form>
+            <label class="input-row">
+              <span>Number of push inlets</span>
+              <span class="input-control">
+                <input data-default-input="pushInletCount" type="number" step="1" min="0" value="3" />
+                <small>pcs</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Airflow per inlet</span>
+              <span class="input-control">
+                <input data-default-input="pushAirflowPerInletM3h" type="number" step="1" min="0" value="0" />
+                <small>m3/h</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Power per inlet fan</span>
+              <span class="input-control">
+                <input data-default-input="pushInletFanPowerW" type="number" step="0.1" min="0" value="0" />
+                <small>W/fan</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Inlet temperature</span>
+              <span class="input-control">
+                <input data-default-input="pushInletTemperatureC" type="number" step="0.1" value="20" />
+                <small>degrees C</small>
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>DeltaP after inlets</span>
+              <span class="input-control">
+                <input data-default-input="pushInletDeltaPPa" type="number" step="1" value="-5" />
+                <small>Pa</small>
+              </span>
+            </label>
+          </form>
+          <div class="section-stack" aria-label="Push inlet results">
+            <div class="section-row">
+              <strong>Total push airflow</strong>
+              <span><output data-push-output="totalPushAirflowM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row">
+              <strong>Total push fan power</strong>
+              <span><output data-push-output="totalPushFanPowerKw">0</output> kW</span>
+            </div>
+            <div class="section-row" data-push-pressure-row>
+              <strong>Pressure after inlets</strong>
+              <span><output data-push-output="pushInletDeltaPPa">-5</output> Pa</span>
+            </div>
+            <div class="section-row">
+              <strong>Inlet temperature</strong>
+              <span><output data-push-output="pushInletTemperatureC">20</output> degrees C</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <aside class="panel results-panel" aria-labelledby="results-title">
         <div class="panel-header compact">
           <h2 id="results-title">Results And Warnings</h2>
@@ -262,6 +344,10 @@
             <span>Cavity pressure</span>
             <strong>Not calculated</strong>
           </div>
+          <div class="status-line neutral" data-push-status-line>
+            <span>Push inlets</span>
+            <strong data-push-status>Not calculated</strong>
+          </div>
           <div class="status-line neutral">
             <span>Extraction balance</span>
             <strong>Not calculated</strong>
@@ -271,10 +357,11 @@
           Magnetron cooling is calculated from editable heat load, airflow, ambient temperature, and outlet temperature limit.
         </p>
         <ul class="warning-list" data-cooling-warnings></ul>
+        <ul class="warning-list" data-push-warnings></ul>
       </aside>
     </section>
   </main>
 
-  <script type="module" src="./app.js?v=phase4"></script>
+  <script type="module" src="./app.js?v=phase5"></script>
 </body>
 </html>

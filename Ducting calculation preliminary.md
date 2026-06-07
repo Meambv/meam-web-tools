@@ -67,6 +67,7 @@ Reference fan specification:
 - Operating voltage: AC 110 V to 240 V, nominal 230 V use
 - Speed: 2800 rpm
 - Airflow rating: 116.6 CFM, about 198.1 m3/h
+- Power per fan: editable, default 0 W until supplier or measured value is confirmed
 - Noise: 41 dBA
 - Bearing: dual ball bearing
 - Service life: 67,000 hours at 25 degrees C

@@ -68,12 +68,14 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 ## Phase 5: Push Inlet Section
 
-- [ ] Add number of push inlets.
-- [ ] Add airflow per push inlet.
-- [ ] Add temperature per push inlet.
-- [ ] Add desired deltaP per inlet relative to ambient.
-- [ ] Warn if pressure after push inlets goes above ambient.
-- [ ] Calculate total push inlet airflow.
+- [x] Add number of push inlets.
+- [x] Add airflow per push inlet.
+- [x] Add power per push inlet fan.
+- [x] Add outlet fan power default for the later extraction section.
+- [x] Add temperature per push inlet.
+- [x] Add desired deltaP per inlet relative to ambient.
+- [x] Warn if pressure after push inlets goes above ambient.
+- [x] Calculate total push inlet airflow.
 
 ## Phase 6: Cavity Balance Section
 
@@ -88,6 +90,7 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 - [ ] Add number of extraction fans.
 - [ ] Add airflow per extraction fan.
+- [ ] Add power per extraction fan.
 - [ ] Add fan grouping field or selector.
 - [ ] Add control mode: humidity based, temperature based, or fixed.
 - [ ] Calculate total extraction airflow.
@@ -165,4 +168,5 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Stop and verify the desktop shell before adding calculations.
 - [x] Implement Phase 3 magnetron cooling core.
 - [x] Implement Phase 4 calculation mode switch.
-- [ ] Implement Phase 5 push inlet section.
+- [x] Implement Phase 5 push inlet section.
+- [ ] Implement Phase 6 cavity balance section.
