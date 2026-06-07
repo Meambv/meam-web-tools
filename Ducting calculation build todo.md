@@ -82,12 +82,16 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 
 ## Phase 6: Cavity Balance Section
 
-- [ ] Add wanted cavity pressure relative to ambient, default -20 Pa.
-- [ ] Add cavity length, default around 20 m.
-- [ ] Calculate total inflow to cavity.
-- [ ] Show push airflow plus magnetron cooling airflow.
-- [ ] Warn if cavity target is not below ambient.
-- [ ] Warn if humidity containment is likely unsafe.
+- [x] Add wanted cavity pressure relative to ambient, default -20 Pa.
+- [x] Add cavity length, default around 20 m.
+- [x] Add cavity width and height.
+- [x] Add magnetron-air opening length and width.
+- [x] Calculate magnetron-air opening area.
+- [x] Alarm if magnetron-air opening area is below required area.
+- [x] Calculate total inflow to cavity.
+- [x] Show push airflow plus magnetron cooling airflow.
+- [x] Warn if cavity target is not below ambient.
+- [x] Warn if humidity containment is likely unsafe.
 
 ## Phase 7: Extraction Fan Section
 
@@ -176,4 +180,5 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Implement Phase 3 magnetron cooling core.
 - [x] Implement Phase 4 calculation mode switch.
 - [x] Implement Phase 5 push inlet section.
-- [ ] Implement Phase 6 cavity balance section.
+- [x] Implement Phase 6 cavity balance section.
+- [ ] Implement Phase 7 extraction fan section.

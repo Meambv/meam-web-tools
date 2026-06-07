@@ -187,7 +187,11 @@ Inputs:
 
 - Wanted cavity pressure relative to ambient
 - Cavity length
-- Optional cavity width and height later
+- Cavity width
+- Cavity height
+- Magnetron-air opening length
+- Magnetron-air opening width
+- Maximum allowed magnetron-air opening velocity
 - Optional leakage/opening factors later
 
 Rules and warnings:
@@ -196,6 +200,7 @@ Rules and warnings:
 - The default target cavity pressure should be -20 Pa relative to ambient.
 - The target pressure should be negative enough to prevent humidity escaping.
 - The tool should warn if push air plus magnetron cooling air is greater than the extraction capacity.
+- The tool should calculate the magnetron-air opening area and alarm if the area is below what is needed for the selected magnetron airflow and velocity limit.
 
 ### 4. Extraction Fans
 

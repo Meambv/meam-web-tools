@@ -170,3 +170,60 @@ export function calculatePushInlets(defaults) {
     warnings
   };
 }
+
+export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
+  const targetCavityPressurePa = numberOrZero(defaults.targetCavityPressurePa);
+  const cavityLengthM = positiveNumber(defaults.cavityLengthM);
+  const cavityWidthM = positiveNumber(defaults.cavityWidthM);
+  const cavityHeightM = positiveNumber(defaults.cavityHeightM);
+  const magnetronAirOpeningLengthM = positiveNumber(defaults.magnetronAirOpeningLengthM);
+  const magnetronAirOpeningWidthM = positiveNumber(defaults.magnetronAirOpeningWidthM);
+  const maxMagnetronOpeningVelocityMs = positiveNumber(defaults.maxMagnetronOpeningVelocityMs);
+  const cavityVolumeM3 = cavityLengthM * cavityWidthM * cavityHeightM;
+  const magnetronAirOpeningAreaM2 = magnetronAirOpeningLengthM * magnetronAirOpeningWidthM;
+  const magnetronAirflowM3h = positiveNumber(magnetronCooling.activeTotalAirflowM3h);
+  const pushAirflowM3h = positiveNumber(pushInlets.totalPushAirflowM3h);
+  const totalInflowM3h = magnetronAirflowM3h + pushAirflowM3h;
+  const requiredOpeningAreaM2 = maxMagnetronOpeningVelocityMs > 0
+    ? (magnetronAirflowM3h / SECONDS_PER_HOUR) / maxMagnetronOpeningVelocityMs
+    : 0;
+  const openingVelocityMs = magnetronAirOpeningAreaM2 > 0
+    ? (magnetronAirflowM3h / SECONDS_PER_HOUR) / magnetronAirOpeningAreaM2
+    : 0;
+  const warnings = [];
+
+  if (targetCavityPressurePa >= 0) {
+    warnings.push({ level: "fail", message: "Cavity pressure target must stay below ambient." });
+  }
+
+  if (cavityLengthM <= 0 || cavityWidthM <= 0 || cavityHeightM <= 0) {
+    warnings.push({ level: "warning", message: "Enter cavity length, width, and height." });
+  }
+
+  if (magnetronAirOpeningAreaM2 <= 0) {
+    warnings.push({ level: "warning", message: "Enter the magnetron-air opening length and width." });
+  }
+
+  if (requiredOpeningAreaM2 > 0 && magnetronAirOpeningAreaM2 < requiredOpeningAreaM2) {
+    warnings.push({ level: "fail", message: "Magnetron-air opening area is below the area required for the selected velocity limit." });
+  }
+
+  return {
+    targetCavityPressurePa,
+    cavityLengthM,
+    cavityWidthM,
+    cavityHeightM,
+    cavityVolumeM3,
+    magnetronAirOpeningLengthM,
+    magnetronAirOpeningWidthM,
+    magnetronAirOpeningAreaM2,
+    maxMagnetronOpeningVelocityMs,
+    requiredOpeningAreaM2,
+    openingVelocityMs,
+    magnetronAirflowM3h,
+    pushAirflowM3h,
+    totalInflowM3h,
+    status: getCoolingStatus(warnings),
+    warnings
+  };
+}

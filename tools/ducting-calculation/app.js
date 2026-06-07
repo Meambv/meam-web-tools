@@ -19,7 +19,13 @@ const elements = {
   pushStatusLine: document.querySelector("[data-push-status-line]"),
   pushStatus: document.querySelector("[data-push-status]"),
   pushWarnings: document.querySelector("[data-push-warnings]"),
-  pushPressureRow: document.querySelector("[data-push-pressure-row]")
+  pushPressureRow: document.querySelector("[data-push-pressure-row]"),
+  cavityOutputs: document.querySelectorAll("[data-cavity-output]"),
+  cavityStatusLine: document.querySelector("[data-cavity-status-line]"),
+  cavityStatus: document.querySelector("[data-cavity-status]"),
+  cavityWarnings: document.querySelector("[data-cavity-warnings]"),
+  cavityPressureRow: document.querySelector("[data-cavity-pressure-row]"),
+  openingAreaRow: document.querySelector("[data-opening-area-row]")
 };
 
 const COOLING_STATUS_TEXT = Object.freeze({
@@ -117,6 +123,24 @@ function renderPushInlets(state) {
   renderWarningList(elements.pushWarnings, state.pushInlets.warnings);
 }
 
+function renderCavityBalance(state) {
+  elements.cavityOutputs.forEach((output) => {
+    const key = output.dataset.cavityOutput;
+    const value = state.cavityBalance[key];
+
+    if (value !== undefined) {
+      output.textContent = formatNumber(value, key);
+    }
+  });
+
+  elements.cavityStatus.textContent = SIMPLE_STATUS_TEXT[state.cavityBalance.status];
+  elements.cavityStatusLine.classList.remove("neutral", "pass", "warning", "fail");
+  elements.cavityStatusLine.classList.add(state.cavityBalance.status);
+  elements.cavityPressureRow.classList.toggle("over-target", state.cavityBalance.targetCavityPressurePa >= 0);
+  elements.openingAreaRow.classList.toggle("over-target", state.cavityBalance.requiredOpeningAreaM2 > 0 && state.cavityBalance.magnetronAirOpeningAreaM2 < state.cavityBalance.requiredOpeningAreaM2);
+  renderWarningList(elements.cavityWarnings, state.cavityBalance.warnings);
+}
+
 function renderCoolingWarnings(warnings) {
   renderWarningList(elements.coolingWarnings, warnings);
 }
@@ -139,6 +163,12 @@ function formatNumber(value, key = "") {
 
   if (key.toLowerCase().includes("freeflow")) {
     return value.toFixed(1);
+  }
+
+  if (key.endsWith("M2") || key.endsWith("M3") || key.endsWith("Ms")) {
+    return new Intl.NumberFormat("en-US", {
+      maximumFractionDigits: 2
+    }).format(value);
   }
 
   return new Intl.NumberFormat("en-US", {
@@ -188,6 +218,7 @@ function initializeApp() {
   subscribeToSharedState(renderDefaults);
   subscribeToSharedState(renderMagnetronCooling);
   subscribeToSharedState(renderPushInlets);
+  subscribeToSharedState(renderCavityBalance);
   bindDefaultInputs();
 
   const accessGranted = hasValidAccess();

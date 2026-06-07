@@ -25,7 +25,7 @@
     </section>
 
     <section class="workspace-grid" aria-label="Ducting calculation workspace">
-      <section class="panel panel-large" aria-labelledby="process-overview-title">
+      <section class="panel process-panel" aria-labelledby="process-overview-title">
         <div class="panel-header">
           <div>
             <p class="section-label">Live reference</p>
@@ -57,7 +57,7 @@
         </div>
       </section>
 
-      <section class="panel" aria-labelledby="defaults-title">
+      <section class="panel defaults-panel" aria-labelledby="defaults-title">
         <div class="panel-header compact">
           <h2 id="defaults-title">Editable Defaults</h2>
           <button class="small-button" type="button" data-reset-defaults>Reset defaults</button>
@@ -115,7 +115,7 @@
         </form>
       </section>
 
-      <section class="panel" aria-labelledby="process-fan-title">
+      <section class="panel fan-data-panel" aria-labelledby="process-fan-title">
         <div class="panel-header compact">
           <h2 id="process-fan-title">Process Fan Data</h2>
           <span class="panel-state">Chosen fan</span>
@@ -165,7 +165,7 @@
         </form>
       </section>
 
-      <section class="panel panel-large" aria-labelledby="magnetron-title">
+      <section class="panel magnetron-panel" aria-labelledby="magnetron-title">
         <div class="panel-header compact">
           <h2 id="magnetron-title">Magnetron Cooling Core</h2>
           <span class="panel-state">Phase 4</span>
@@ -312,7 +312,7 @@
         </div>
       </section>
 
-      <section class="panel" aria-labelledby="push-title">
+      <section class="panel push-panel" aria-labelledby="push-title">
         <div class="panel-header compact">
           <h2 id="push-title">Push Inlets</h2>
           <span class="panel-state">Phase 5</span>
@@ -376,6 +376,96 @@
         </div>
       </section>
 
+      <section class="panel cavity-panel" aria-labelledby="cavity-title">
+        <div class="panel-header compact">
+          <h2 id="cavity-title">Cavity Balance</h2>
+          <span class="panel-state">Phase 6</span>
+        </div>
+        <div class="split-grid">
+          <form class="defaults-form" data-cavity-form>
+            <label class="input-row important">
+              <span>Wanted cavity pressure</span>
+              <span class="input-control">
+                <input data-default-input="targetCavityPressurePa" type="number" step="1" value="-20" />
+                <small>Pa</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Cavity length</span>
+              <span class="input-control">
+                <input data-default-input="cavityLengthM" type="number" step="0.1" min="0" value="20" />
+                <small>m</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Cavity width</span>
+              <span class="input-control">
+                <input data-default-input="cavityWidthM" type="number" step="0.1" min="0" value="1.2" />
+                <small>m</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Cavity height</span>
+              <span class="input-control">
+                <input data-default-input="cavityHeightM" type="number" step="0.1" min="0" value="0.8" />
+                <small>m</small>
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>Magnetron air open L</span>
+              <span class="input-control">
+                <input data-default-input="magnetronAirOpeningLengthM" type="number" step="0.01" min="0" value="1" />
+                <small>m</small>
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>Magnetron air open W</span>
+              <span class="input-control">
+                <input data-default-input="magnetronAirOpeningWidthM" type="number" step="0.01" min="0" value="0.2" />
+                <small>m</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Max opening velocity</span>
+              <span class="input-control">
+                <input data-default-input="maxMagnetronOpeningVelocityMs" type="number" step="0.1" min="0" value="6" />
+                <small>m/s</small>
+              </span>
+            </label>
+          </form>
+          <div class="section-stack" aria-label="Cavity balance results">
+            <div class="section-row">
+              <strong>Total inflow to cavity</strong>
+              <span><output data-cavity-output="totalInflowM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row">
+              <strong>Magnetron airflow</strong>
+              <span><output data-cavity-output="magnetronAirflowM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row">
+              <strong>Push airflow</strong>
+              <span><output data-cavity-output="pushAirflowM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row">
+              <strong>Cavity volume</strong>
+              <span><output data-cavity-output="cavityVolumeM3">0</output> m3</span>
+            </div>
+            <div class="section-row" data-cavity-pressure-row>
+              <strong>Target cavity pressure</strong>
+              <span><output data-cavity-output="targetCavityPressurePa">-20</output> Pa</span>
+            </div>
+            <div class="section-row" data-opening-area-row>
+              <strong>Opening area / required</strong>
+              <span><output data-cavity-output="magnetronAirOpeningAreaM2">0</output> / <output data-cavity-output="requiredOpeningAreaM2">0</output> m2</span>
+            </div>
+            <div class="section-row">
+              <strong>Opening velocity</strong>
+              <span><output data-cavity-output="openingVelocityMs">0</output> m/s</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <aside class="panel results-panel" aria-labelledby="results-title">
         <div class="panel-header compact">
           <h2 id="results-title">Results And Warnings</h2>
@@ -390,9 +480,9 @@
             <span>Magnetron outlet</span>
             <strong data-cooling-status>Not calculated</strong>
           </div>
-          <div class="status-line neutral">
+          <div class="status-line neutral" data-cavity-status-line>
             <span>Cavity pressure</span>
-            <strong>Not calculated</strong>
+            <strong data-cavity-status>Not calculated</strong>
           </div>
           <div class="status-line neutral" data-push-status-line>
             <span>Push inlets</span>
@@ -408,10 +498,11 @@
         </p>
         <ul class="warning-list" data-cooling-warnings></ul>
         <ul class="warning-list" data-push-warnings></ul>
+        <ul class="warning-list" data-cavity-warnings></ul>
       </aside>
     </section>
   </main>
 
-  <script type="module" src="./app.js?v=phase5"></script>
+  <script type="module" src="./app.js?v=phase6"></script>
 </body>
 </html>
