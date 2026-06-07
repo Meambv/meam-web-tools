@@ -1,6 +1,4 @@
 const SECONDS_PER_HOUR = 3600;
-const M3H_PER_CFM = 1.69901082;
-
 export function calculateMagnetronCooling(defaults) {
   const magnetronCount = positiveNumber(defaults.magnetronCount);
   const fansPerMagnetron = positiveNumber(defaults.fansPerMagnetron);
@@ -12,11 +10,10 @@ export function calculateMagnetronCooling(defaults) {
   const maxOutletTemperatureC = numberOrZero(defaults.maxOutletTemperatureC);
   const airDensityKgM3 = positiveNumber(defaults.airDensityKgM3);
   const airHeatCapacityKjKgK = positiveNumber(defaults.airHeatCapacityKjKgK);
-  const fanFreeflowCfm = positiveNumber(defaults.fanFreeflowCfm);
+  const fanFreeflowM3h = positiveNumber(defaults.fanFreeflowM3h);
   const fanPowerW = positiveNumber(defaults.fanPowerW);
 
   const allowableDeltaTC = maxOutletTemperatureC - ambientTemperatureC;
-  const fanFreeflowM3h = fanFreeflowCfm * M3H_PER_CFM;
   const totalFanPowerKw = (magnetronCount * fansPerMagnetron * fanPowerW) / 1000;
   const totalTargetAirflowM3h = magnetronCount * targetAirflowPerMagnetronM3h;
   const heatLoadPerMagnetronKw = magnetronCount > 0 ? heatLoadKw / magnetronCount : 0;

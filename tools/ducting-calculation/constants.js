@@ -1,3 +1,8 @@
+import { getDefaultFanForRole } from "./fanLibrary.js?v=fan-library";
+
+const magnetronFan = getDefaultFanForRole("magnetronCooling");
+const processFan = getDefaultFanForRole("pushInlet");
+
 export const ACCESS_STORAGE_KEY = "meam:webtools:access";
 export const ACCESS_CODE = "B5C6D7";
 
@@ -18,30 +23,30 @@ export const DEFAULTS = Object.freeze({
   magnetronAirOpeningWidthM: 0.2,
   maxMagnetronOpeningVelocityMs: 6,
   pushInletCount: 3,
-  pushAirflowPerInletM3h: 2979,
-  pushInletFanPowerW: 1850,
+  pushAirflowPerInletM3h: processFan.actualWorkpoint.airflowM3h,
+  pushInletFanPowerW: processFan.actualWorkpoint.inputPowerKw * 1000,
   pushInletTemperatureC: 20,
   pushInletDeltaPPa: -5,
-  extractionFanPowerW: 1850,
-  processFanModel: "IRT/4-450 230/400V50Hz 560/160 VE",
-  processFanWorkpointAirflowM3h: 2979,
-  processFanStaticPressurePa: 888,
-  processFanInputPowerKw: 1.85,
-  processFanFrequencyHz: 50,
-  processFanMaxFrequencyHz: 60,
+  extractionFanPowerW: processFan.actualWorkpoint.inputPowerKw * 1000,
+  processFanModel: processFan.label,
+  processFanWorkpointAirflowM3h: processFan.actualWorkpoint.airflowM3h,
+  processFanStaticPressurePa: processFan.actualWorkpoint.staticPressurePa,
+  processFanInputPowerKw: processFan.actualWorkpoint.inputPowerKw,
+  processFanFrequencyHz: processFan.nominal.frequencyHz,
+  processFanMaxFrequencyHz: processFan.nominal.maxFrequencyHz,
   airDensityKgM3: 1.2,
   airHeatCapacityKjKgK: 1.006,
-  fanModel: "GEA1238B28N30",
+  fanModel: magnetronFan.label,
   fanPowerW: 0,
   defaultFanAirflowM3h: 57.5,
-  measuredFanAirflowMinM3h: 45,
-  measuredFanAirflowMaxM3h: 70,
-  restrictedFanAirflowM3h: 50,
-  fanFreeflowCfm: 116.6,
-  restrictionPressureLossPa: 50,
-  restrictionHoleCount: 40,
-  restrictionHoleWidthMm: 9,
-  restrictionHoleHeightMm: 9,
+  measuredFanAirflowMinM3h: magnetronFan.measuredOperatingRange.airflowM3h.min,
+  measuredFanAirflowMaxM3h: magnetronFan.measuredOperatingRange.airflowM3h.max,
+  restrictedFanAirflowM3h: magnetronFan.measuredOperatingRange.airflowM3h.typical,
+  fanFreeflowM3h: magnetronFan.nominal.freeflowM3h,
+  restrictionPressureLossPa: magnetronFan.restriction.measuredDeltaPPa,
+  restrictionHoleCount: magnetronFan.restriction.holeCount,
+  restrictionHoleWidthMm: magnetronFan.restriction.holeWidthMm,
+  restrictionHoleHeightMm: magnetronFan.restriction.holeHeightMm,
   airflowTolerancePercent: 10
 });
 

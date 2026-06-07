@@ -50,7 +50,7 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Add target airflow per magnetron, default 57.5 m3/h.
 - [x] Show measured fan range, 45 to 70 m3/h.
 - [x] Show measured typical restricted airflow, about 50 m3/h.
-- [x] Show fan freeflow rating, 116.6 CFM.
+- [x] Show fan freeflow rating in metric units.
 - [x] Show magnetron cooling restriction pressure loss, about 50 Pa.
 - [x] Show restriction geometry, 40 holes of 9 mm by 9 mm.
 - [x] Calculate total magnetron airflow.
@@ -101,6 +101,7 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [ ] Add power per extraction fan.
 - [ ] Use permanent IRT/4-450 fan defaults for extraction fan airflow and power.
 - [ ] Add fan-curve data entry for IRT/4-450 airflow versus static pressure.
+- [x] Add metric fan library with IRT/4-450 50 Hz curve data.
 - [ ] Add VFD frequency estimate from required airflow and static pressure.
 - [ ] Warn when required operation exceeds 50 Hz and depends on ramping toward 60 Hz.
 - [ ] Add cavity pressure target and serial airflow target as extraction control inputs.

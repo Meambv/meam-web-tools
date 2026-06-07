@@ -1,5 +1,5 @@
-import { DEFAULTS } from "./constants.js?v=save-open";
-import { calculateCavityBalance, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=save-open";
+import { DEFAULTS } from "./constants.js?v=fan-library";
+import { calculateCavityBalance, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=fan-library";
 
 const subscribers = new Set();
 const STORAGE_KEYS = Object.freeze({

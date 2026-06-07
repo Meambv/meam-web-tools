@@ -48,7 +48,7 @@ Default values:
 - Default airflow per magnetron fan: 57.5 m3/h
 - Measured airflow range from test setups: 45 to 70 m3/h per fan
 - Measured typical airflow through the actual magnetron restriction: about 50 m3/h per fan
-- Freeflow fan rating: 116.6 CFM
+- Freeflow fan rating: 198.1 m3/h
 - Approximate pressure loss through the magnetron cooling restriction: 50 Pa
 - Cooling restriction geometry: 40 holes of 9 mm by 9 mm
 - Default airflow tolerance or design band: plus or minus 10 percent
@@ -95,7 +95,7 @@ Reference fan specification:
 - Size: 120 mm fan, 120 x 120 x 38 mm
 - Operating voltage: AC 110 V to 240 V, nominal 230 V use
 - Speed: 2800 rpm
-- Airflow rating: 116.6 CFM, about 198.1 m3/h
+- Airflow rating: 198.1 m3/h
 - Power per fan: editable, default 0 W until supplier or measured value is confirmed
 - Noise: 41 dBA
 - Bearing: dual ball bearing
@@ -189,7 +189,7 @@ The UI should support two calculation modes:
 
 Default behavior should use the editable GEA1238B28N30 fan airflow average of 57.5 m3/h per magnetron, with a visible measured range of 45 to 70 m3/h.
 
-The known pressure input should initially be treated as duct section pressure drop. For the magnetron cooling path, the measured pressure loss is about 50 Pa through the restriction made by 40 holes of 9 mm by 9 mm. This produced about 50 m3/h in the real setup, while the fan freeflow rating is 116.6 CFM.
+The known pressure input should initially be treated as duct section pressure drop. For the magnetron cooling path, the measured pressure loss is about 50 Pa through the restriction made by 40 holes of 9 mm by 9 mm. This produced about 50 m3/h in the real setup, while the fan freeflow rating is 198.1 m3/h.
 
 The user should be able to override the measured default because inlet push pressure and extraction pull may create a small amount of usable wiggle room in the actual flow.
 
