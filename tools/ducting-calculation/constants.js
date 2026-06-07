@@ -1,4 +1,4 @@
-import { getDefaultFanForRole } from "./fanLibrary.js?v=push-clarity";
+import { getDefaultFanForRole } from "./fanLibrary.js?v=push-rows";
 
 const magnetronFan = getDefaultFanForRole("magnetronCooling");
 const processFan = getDefaultFanForRole("pushInlet");
@@ -26,6 +26,7 @@ export const DEFAULTS = Object.freeze({
   pushAirflowPerInletM3h: processFan.actualWorkpoint.airflowM3h,
   pushInletFanPowerW: processFan.actualWorkpoint.inputPowerKw * 1000,
   pushInletTemperatureC: 20,
+  pushInletRelativeHumidityPercent: 80,
   pushInletDeltaPPa: -5,
   extractionFanPowerW: processFan.actualWorkpoint.inputPowerKw * 1000,
   processFanModel: processFan.label,

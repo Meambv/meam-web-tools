@@ -1,5 +1,5 @@
-import { DEFAULTS } from "./constants.js?v=push-clarity";
-import { calculateCavityBalance, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=push-clarity";
+import { DEFAULTS } from "./constants.js?v=push-rows";
+import { calculateCavityBalance, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=push-rows";
 
 const subscribers = new Set();
 const STORAGE_KEYS = Object.freeze({

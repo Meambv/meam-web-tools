@@ -1,5 +1,5 @@
-import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=push-clarity";
-import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=push-clarity";
+import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=push-rows";
+import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=push-rows";
 
 const REDIRECT_DELAY_MS = 1200;
 
@@ -143,7 +143,7 @@ function renderCavityBalance(state) {
   elements.cavityStatusLine.classList.add(state.cavityBalance.status);
   elements.cavityPressureRow.classList.toggle("over-target", state.cavityBalance.targetCavityPressurePa >= 0);
   elements.openingAreaRow.classList.toggle("over-target", state.cavityBalance.requiredOpeningAreaM2 > 0 && state.cavityBalance.magnetronAirOpeningAreaM2 < state.cavityBalance.requiredOpeningAreaM2);
-  elements.flowDeltaRow.classList.toggle("over-target", state.cavityBalance.pushMagnetronFlowDeltaM3h < 0);
+  elements.flowDeltaRow.classList.toggle("over-target", state.cavityBalance.pushMagnetronFlowDeltaM3h > 0);
   renderWarningList(elements.cavityWarnings, state.cavityBalance.warnings);
 }
 

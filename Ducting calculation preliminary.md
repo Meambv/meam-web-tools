@@ -158,7 +158,10 @@ Rules and warnings:
 - The entered fan data flow and fan data power are reference values at the fan data static pressure, not the real operating flow at the low inlet pressure.
 - Fan data flow, fan data power, and fan data pressure should be grouped together in the push inlet input area because they describe the same reference fan point.
 - The 50 Hz curve flow is an estimate of available capacity at the selected inlet pressure. The controlled push flow and indicative VFD setting are estimates and should be italic in the UI.
-- Needed flow per inlet, curve capacity, controlled push flow, controlled-minus-magnetron flow, and indicative inlet VFD setting should be shown in the Push Inlets table, not the Cavity Balance table.
+- The Push Inlets table should show, in order: total required flow, needed flow per inlet, indicative inlet VFD setting, delta flow inlets minus magnetrons, indicative total push fan power, pressure after inlets, inlet temperature, and inlet relative humidity.
+- Total required push flow should default to 1 percent less than the required total magnetron airflow. This keeps the upstream inlet side slightly under the magnetron demand.
+- Total push fan power in the Push Inlets table is indicative and should be scaled down with the VFD estimate rather than using the full reference fan data power.
+- Default inlet relative humidity is 80 percent.
 - Indicative inlet VFD frequency should compare required flow per fan against the curve-estimated 50 Hz flow. If the target pressure is more negative, available flow drops and the indicative frequency rises; if pressure is closer to ambient, the fan should slow down.
 
 ### 2. Magnetron Cooling Air

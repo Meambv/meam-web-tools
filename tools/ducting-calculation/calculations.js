@@ -1,4 +1,4 @@
-import { getDefaultFanForRole } from "./fanLibrary.js?v=push-clarity";
+import { getDefaultFanForRole } from "./fanLibrary.js?v=push-rows";
 
 const SECONDS_PER_HOUR = 3600;
 export function calculateMagnetronCooling(defaults) {
@@ -141,6 +141,7 @@ export function calculatePushInlets(defaults) {
   const pushAirflowPerInletM3h = positiveNumber(defaults.pushAirflowPerInletM3h);
   const pushInletFanPowerW = positiveNumber(defaults.pushInletFanPowerW);
   const pushInletTemperatureC = numberOrZero(defaults.pushInletTemperatureC);
+  const pushInletRelativeHumidityPercent = clamp(numberOrZero(defaults.pushInletRelativeHumidityPercent), 0, 100);
   const pushInletDeltaPPa = numberOrZero(defaults.pushInletDeltaPPa);
   const processFanStaticPressurePa = positiveNumber(defaults.processFanStaticPressurePa);
   const curvePressurePa = Math.abs(pushInletDeltaPPa);
@@ -171,6 +172,7 @@ export function calculatePushInlets(defaults) {
     pushAirflowPerInletM3h,
     pushInletFanPowerW,
     pushInletTemperatureC,
+    pushInletRelativeHumidityPercent,
     pushInletDeltaPPa,
     processFanStaticPressurePa,
     curvePressurePa,
@@ -200,12 +202,15 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
   const curveFlowPerInletAt50HzM3h = positiveNumber(pushInlets.curveFlowPerInletAt50HzM3h);
   const processFanFrequencyHz = positiveNumber(defaults.processFanFrequencyHz);
   const processFanMaxFrequencyHz = positiveNumber(defaults.processFanMaxFrequencyHz);
-  const indicativeInletTargetFlowM3h = magnetronAirflowM3h;
+  const requiredPushAirflowM3h = magnetronAirflowM3h * 0.99;
+  const indicativeInletTargetFlowM3h = requiredPushAirflowM3h;
   const indicativeInletFlowPerFanM3h = pushInletCount > 0 ? indicativeInletTargetFlowM3h / pushInletCount : 0;
   const indicativeInletFrequencyHz = curveFlowPerInletAt50HzM3h > 0 && processFanFrequencyHz > 0
     ? processFanFrequencyHz * (indicativeInletFlowPerFanM3h / curveFlowPerInletAt50HzM3h)
     : 0;
   const indicativeInletFlowAtFrequencyM3h = pushInletCount * curveFlowPerInletAt50HzM3h * (indicativeInletFrequencyHz / processFanFrequencyHz || 0);
+  const indicativeFrequencyRatio = processFanFrequencyHz > 0 ? indicativeInletFrequencyHz / processFanFrequencyHz : 0;
+  const indicativePushFanPowerKw = (pushInletCount * positiveNumber(defaults.pushInletFanPowerW) / 1000) * Math.pow(indicativeFrequencyRatio, 3);
   const serialCavityAirflowM3h = Math.max(magnetronAirflowM3h, indicativeInletFlowAtFrequencyM3h);
   const pushMagnetronFlowDeltaM3h = indicativeInletFlowAtFrequencyM3h - magnetronAirflowM3h;
   const requiredOpeningAreaM2 = maxMagnetronOpeningVelocityMs > 0
@@ -232,8 +237,12 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     warnings.push({ level: "fail", message: "Magnetron-air opening area is below the area required for the selected velocity limit." });
   }
 
-  if (indicativeInletFlowAtFrequencyM3h < magnetronAirflowM3h) {
-    warnings.push({ level: "warning", message: "Indicative controlled push flow is below the magnetron airflow requirement." });
+  if (magnetronAirflowM3h > 0 && indicativeInletFlowAtFrequencyM3h > magnetronAirflowM3h) {
+    warnings.push({ level: "warning", message: "Indicative controlled push flow is above magnetron airflow and may reduce the negative inlet-side pressure bias." });
+  }
+
+  if (magnetronAirflowM3h > 0 && indicativeInletFlowAtFrequencyM3h < magnetronAirflowM3h * 0.95) {
+    warnings.push({ level: "warning", message: "Indicative controlled push flow is more than 5 percent below magnetron airflow; confirm the inlet side is not underfed." });
   }
 
   if (indicativeInletFrequencyHz > processFanFrequencyHz && indicativeInletFrequencyHz <= processFanMaxFrequencyHz) {
@@ -258,7 +267,9 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     openingVelocityMs,
     magnetronAirflowM3h,
     pushAirflowM3h,
+    requiredPushAirflowM3h,
     indicativeInletFlowAtFrequencyM3h,
+    indicativePushFanPowerKw,
     serialCavityAirflowM3h,
     pushMagnetronFlowDeltaM3h,
     indicativeInletTargetFlowM3h,
@@ -267,6 +278,10 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     status: getCoolingStatus(warnings),
     warnings
   };
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }
 
 function getFlowAtPressure(curvePoints, pressurePa) {

@@ -360,6 +360,13 @@
                 <small>degrees C</small>
               </span>
             </label>
+            <label class="input-row">
+              <span>Inlet rel humidity</span>
+              <span class="input-control">
+                <input data-default-input="pushInletRelativeHumidityPercent" type="number" step="1" min="0" max="100" value="80" />
+                <small>%</small>
+              </span>
+            </label>
             <label class="input-row important">
               <span>DeltaP after inlets</span>
               <span class="input-control">
@@ -369,17 +376,9 @@
             </label>
           </form>
           <div class="section-stack" aria-label="Push inlet results">
-            <div class="section-row">
-              <strong>Fan data total flow</strong>
-              <span><output data-push-output="totalPushAirflowM3h">0</output> m3/h</span>
-            </div>
             <div class="section-row estimate-row">
-              <strong>50 Hz curve flow per fan *</strong>
-              <span><output data-push-output="curveFlowPerInletAt50HzM3h">0</output> m3/h</span>
-            </div>
-            <div class="section-row estimate-row">
-              <strong>50 Hz curve capacity *</strong>
-              <span><output data-push-output="totalCurvePushAirflowAt50HzM3h">0</output> m3/h</span>
+              <strong>Total required flow *</strong>
+              <span><output data-cavity-output="requiredPushAirflowM3h">0</output> m3/h</span>
             </div>
             <div class="section-row estimate-row">
               <strong>Needed flow per inlet *</strong>
@@ -389,17 +388,13 @@
               <strong>Indicative inlet VFD setting *</strong>
               <span><output data-cavity-output="indicativeInletFrequencyHz">0</output> Hz</span>
             </div>
-            <div class="section-row estimate-row">
-              <strong>Controlled push flow *</strong>
-              <span><output data-cavity-output="indicativeInletFlowAtFrequencyM3h">0</output> m3/h</span>
-            </div>
             <div class="section-row estimate-row" data-flow-delta-row>
-              <strong>Controlled minus magnetron *</strong>
+              <strong>Delta flow inlets-magnetrons *</strong>
               <span><output data-cavity-output="pushMagnetronFlowDeltaM3h">0</output> m3/h</span>
             </div>
-            <div class="section-row">
-              <strong>Total push fan power</strong>
-              <span><output data-push-output="totalPushFanPowerKw">0</output> kW</span>
+            <div class="section-row estimate-row">
+              <strong>Total push fan power indicative *</strong>
+              <span><output data-cavity-output="indicativePushFanPowerKw">0</output> kW</span>
             </div>
             <div class="section-row" data-push-pressure-row>
               <strong>Pressure after inlets</strong>
@@ -408,6 +403,10 @@
             <div class="section-row">
               <strong>Inlet temperature</strong>
               <span><output data-push-output="pushInletTemperatureC">20</output> degrees C</span>
+            </div>
+            <div class="section-row">
+              <strong>Inlet rel humidity</strong>
+              <span><output data-push-output="pushInletRelativeHumidityPercent">80</output>%</span>
             </div>
           </div>
         </div>
@@ -537,6 +536,6 @@
     </section>
   </main>
 
-  <script type="module" src="./app.js?v=push-clarity"></script>
+  <script type="module" src="./app.js?v=push-rows"></script>
 </body>
 </html>
