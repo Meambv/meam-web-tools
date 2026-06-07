@@ -165,7 +165,7 @@ h2 {
 
 .workspace-grid {
   display: grid;
-  grid-template-columns: minmax(420px, 1.15fr) minmax(420px, 1.15fr) minmax(380px, 1fr) minmax(340px, 0.82fr);
+  grid-template-columns: minmax(300px, 0.78fr) minmax(330px, 0.86fr) minmax(610px, 1.58fr) minmax(280px, 0.62fr);
   grid-auto-rows: auto;
   gap: 6px;
   margin-top: 6px;
@@ -339,9 +339,9 @@ h2 {
 
 .input-control {
   display: grid;
-  grid-template-columns: minmax(94px, 118px) minmax(64px, auto);
+  grid-template-columns: minmax(82px, 108px) minmax(52px, auto);
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: var(--quiet);
 }
 
@@ -363,11 +363,11 @@ h2 {
 }
 
 .mode-control {
-  grid-template-columns: minmax(178px, 1fr);
+  grid-template-columns: minmax(150px, 1fr);
 }
 
 .text-control {
-  grid-template-columns: minmax(260px, 1fr);
+  grid-template-columns: minmax(210px, 1fr);
 }
 
 .wide-form-row {
@@ -388,14 +388,14 @@ h2 {
 
 .cooling-grid {
   display: grid;
-  grid-template-columns: minmax(360px, 0.86fr) minmax(440px, 1.14fr);
+  grid-template-columns: minmax(250px, 0.78fr) minmax(330px, 1fr);
   gap: 6px;
   padding: 6px;
 }
 
 .split-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+  grid-template-columns: minmax(270px, 0.9fr) minmax(300px, 1fr);
   gap: 6px;
   padding: 6px;
 }
@@ -416,7 +416,7 @@ output {
 
 .reference-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
   gap: 1px;
   margin-top: 0;
   background: var(--line);
@@ -433,7 +433,7 @@ output {
 }
 
 .compact-control {
-  grid-template-columns: minmax(68px, 84px) minmax(48px, auto);
+  grid-template-columns: minmax(58px, 76px) minmax(42px, auto);
 }
 
 .conversion-control {
@@ -453,7 +453,7 @@ output {
 }
 
 .section-row span {
-  max-width: 220px;
+  max-width: 260px;
   text-align: right;
 }
 
@@ -522,7 +522,7 @@ output {
   }
 
   .workspace-grid {
-    grid-template-columns: minmax(720px, 1.5fr) minmax(520px, 0.9fr) minmax(440px, 0.75fr);
+    grid-template-columns: minmax(330px, 0.78fr) minmax(360px, 0.86fr) minmax(720px, 1.58fr) minmax(310px, 0.62fr);
   }
 }
 
