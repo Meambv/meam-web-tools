@@ -1,3 +1,5 @@
+import { getDefaultFanForRole } from "./fanLibrary.js?v=push-curve";
+
 const SECONDS_PER_HOUR = 3600;
 export function calculateMagnetronCooling(defaults) {
   const magnetronCount = positiveNumber(defaults.magnetronCount);
@@ -134,11 +136,15 @@ function numberOrZero(value) {
 }
 
 export function calculatePushInlets(defaults) {
+  const processFan = getDefaultFanForRole("pushInlet");
   const pushInletCount = positiveNumber(defaults.pushInletCount);
   const pushAirflowPerInletM3h = positiveNumber(defaults.pushAirflowPerInletM3h);
   const pushInletFanPowerW = positiveNumber(defaults.pushInletFanPowerW);
   const pushInletTemperatureC = numberOrZero(defaults.pushInletTemperatureC);
   const pushInletDeltaPPa = numberOrZero(defaults.pushInletDeltaPPa);
+  const curvePressurePa = Math.abs(pushInletDeltaPPa);
+  const curveFlowPerInletAt50HzM3h = getFlowAtPressure(processFan.staticPressureCurve50Hz, curvePressurePa);
+  const totalCurvePushAirflowAt50HzM3h = pushInletCount * curveFlowPerInletAt50HzM3h;
   const totalPushAirflowM3h = pushInletCount * pushAirflowPerInletM3h;
   const totalPushFanPowerKw = (pushInletCount * pushInletFanPowerW) / 1000;
   const warnings = [];
@@ -155,12 +161,19 @@ export function calculatePushInlets(defaults) {
     warnings.push({ level: "warning", message: "Pressure after push inlets should stay below ambient." });
   }
 
+  if (curveFlowPerInletAt50HzM3h > 0 && pushAirflowPerInletM3h > curveFlowPerInletAt50HzM3h) {
+    warnings.push({ level: "warning", message: "Target inlet flow is above the estimated fan curve flow at this pressure." });
+  }
+
   return {
     pushInletCount,
     pushAirflowPerInletM3h,
     pushInletFanPowerW,
     pushInletTemperatureC,
     pushInletDeltaPPa,
+    curvePressurePa,
+    curveFlowPerInletAt50HzM3h,
+    totalCurvePushAirflowAt50HzM3h,
     totalPushAirflowM3h,
     totalPushFanPowerKw,
     status: warnings.length > 0 ? "warning" : "pass",
@@ -183,15 +196,15 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
   const serialCavityAirflowM3h = Math.max(magnetronAirflowM3h, pushAirflowM3h);
   const pushMagnetronFlowDeltaM3h = pushAirflowM3h - magnetronAirflowM3h;
   const pushInletCount = positiveNumber(defaults.pushInletCount);
-  const pushAirflowPerInletM3h = positiveNumber(defaults.pushAirflowPerInletM3h);
+  const curveFlowPerInletAt50HzM3h = positiveNumber(pushInlets.curveFlowPerInletAt50HzM3h);
   const processFanFrequencyHz = positiveNumber(defaults.processFanFrequencyHz);
   const processFanMaxFrequencyHz = positiveNumber(defaults.processFanMaxFrequencyHz);
   const indicativeInletTargetFlowM3h = magnetronAirflowM3h;
   const indicativeInletFlowPerFanM3h = pushInletCount > 0 ? indicativeInletTargetFlowM3h / pushInletCount : 0;
-  const indicativeInletFrequencyHz = pushAirflowPerInletM3h > 0 && processFanFrequencyHz > 0
-    ? processFanFrequencyHz * (indicativeInletFlowPerFanM3h / pushAirflowPerInletM3h)
+  const indicativeInletFrequencyHz = curveFlowPerInletAt50HzM3h > 0 && processFanFrequencyHz > 0
+    ? processFanFrequencyHz * (indicativeInletFlowPerFanM3h / curveFlowPerInletAt50HzM3h)
     : 0;
-  const indicativeInletFlowAtFrequencyM3h = pushInletCount * pushAirflowPerInletM3h * (indicativeInletFrequencyHz / processFanFrequencyHz || 0);
+  const indicativeInletFlowAtFrequencyM3h = pushInletCount * curveFlowPerInletAt50HzM3h * (indicativeInletFrequencyHz / processFanFrequencyHz || 0);
   const requiredOpeningAreaM2 = maxMagnetronOpeningVelocityMs > 0
     ? (magnetronAirflowM3h / SECONDS_PER_HOUR) / maxMagnetronOpeningVelocityMs
     : 0;
@@ -251,4 +264,29 @@ export function calculateCavityBalance(defaults, magnetronCooling, pushInlets) {
     status: getCoolingStatus(warnings),
     warnings
   };
+}
+
+function getFlowAtPressure(curvePoints, pressurePa) {
+  if (!Array.isArray(curvePoints) || curvePoints.length === 0) {
+    return 0;
+  }
+
+  const points = [...curvePoints].sort((first, second) => first.staticPressurePa - second.staticPressurePa);
+
+  if (pressurePa <= points[0].staticPressurePa) {
+    return points[0].airflowM3h;
+  }
+
+  for (let index = 1; index < points.length; index += 1) {
+    const previous = points[index - 1];
+    const current = points[index];
+
+    if (pressurePa <= current.staticPressurePa) {
+      const pressureSpan = current.staticPressurePa - previous.staticPressurePa;
+      const ratio = pressureSpan > 0 ? (pressurePa - previous.staticPressurePa) / pressureSpan : 0;
+      return previous.airflowM3h + (current.airflowM3h - previous.airflowM3h) * ratio;
+    }
+  }
+
+  return points[points.length - 1].airflowM3h;
 }

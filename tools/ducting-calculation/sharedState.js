@@ -1,5 +1,5 @@
-import { DEFAULTS } from "./constants.js?v=indicative-vfd";
-import { calculateCavityBalance, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=indicative-vfd";
+import { DEFAULTS } from "./constants.js?v=push-curve";
+import { calculateCavityBalance, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=push-curve";
 
 const subscribers = new Set();
 const STORAGE_KEYS = Object.freeze({

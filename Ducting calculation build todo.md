@@ -104,6 +104,7 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Add metric fan library JSON with IRT/4-450 50 Hz curve data.
 - [ ] Add VFD frequency estimate from required airflow and static pressure.
 - [x] Add indicative inlet VFD estimate rows before final extraction control.
+- [x] Use process fan curve at push inlet deltaP for 50 Hz inlet flow estimate.
 - [ ] Warn when required operation exceeds 50 Hz and depends on ramping toward 60 Hz.
 - [x] Mark VFD estimates as indicative because real fan speed is PLC PID controlled.
 - [x] Use PLC pressure target range of about -2 to -10 Pa.

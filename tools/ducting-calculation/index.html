@@ -333,7 +333,7 @@
               </span>
             </label>
             <label class="input-row">
-              <span>Airflow per inlet</span>
+              <span>Target flow per inlet</span>
               <span class="input-control">
                 <input data-default-input="pushAirflowPerInletM3h" data-process-fan-derived="airflow" type="number" step="1" min="0" value="2979" />
                 <small>m3/h</small>
@@ -363,8 +363,16 @@
           </form>
           <div class="section-stack" aria-label="Push inlet results">
             <div class="section-row">
-              <strong>Total push airflow</strong>
+              <strong>Target push airflow</strong>
               <span><output data-push-output="totalPushAirflowM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>50 Hz curve flow per fan *</strong>
+              <span><output data-push-output="curveFlowPerInletAt50HzM3h">0</output> m3/h</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>50 Hz curve capacity *</strong>
+              <span><output data-push-output="totalCurvePushAirflowAt50HzM3h">0</output> m3/h</span>
             </div>
             <div class="section-row">
               <strong>Total push fan power</strong>
@@ -522,6 +530,6 @@
     </section>
   </main>
 
-  <script type="module" src="./app.js?v=indicative-vfd"></script>
+  <script type="module" src="./app.js?v=push-curve"></script>
 </body>
 </html>
