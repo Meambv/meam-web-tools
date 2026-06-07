@@ -1,4 +1,4 @@
-import { getDefaultFanForRole } from "./fanLibrary.js?v=phase7-extraction";
+import { getDefaultFanForRole } from "./fanLibrary.js?v=phase7-cavity-pressure";
 
 const magnetronFan = getDefaultFanForRole("magnetronCooling");
 const processFan = getDefaultFanForRole("pushInlet");
@@ -31,7 +31,8 @@ export const DEFAULTS = Object.freeze({
   extractionFanCount: 3,
   extractionAirflowPerFanM3h: processFan.actualWorkpoint.airflowM3h,
   extractionFanPowerW: processFan.actualWorkpoint.inputPowerKw * 1000,
-  extractionStaticPressurePa: processFan.actualWorkpoint.staticPressurePa,
+  extractionCavityAbsolutePressurePa: 101225,
+  extractionRecoveryPressureDropPa: 290,
   extractionFanGroupLabel: "All extraction fans",
   extractionControlMode: "humidityTemperature",
   extractionTemperatureC: 45,

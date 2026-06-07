@@ -1,5 +1,5 @@
-import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=phase7-extraction";
-import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=phase7-extraction";
+import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=phase7-cavity-pressure";
+import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=phase7-cavity-pressure";
 
 const REDIRECT_DELAY_MS = 1200;
 
@@ -226,10 +226,7 @@ function bindDefaultInputs() {
       }
 
       if (key === "processFanStaticPressurePa") {
-        updateDefaultValues({
-          processFanStaticPressurePa: value,
-          extractionStaticPressurePa: value
-        });
+        updateDefaultValue(key, value);
         return;
       }
 

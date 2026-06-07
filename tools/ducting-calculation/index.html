@@ -564,9 +564,16 @@
               </span>
             </label>
             <label class="input-row important">
-              <span>Fan static pressure</span>
+              <span>Cavity abs pressure</span>
               <span class="input-control">
-                <input data-default-input="extractionStaticPressurePa" type="number" step="1" min="0" value="888" />
+                <input data-default-input="extractionCavityAbsolutePressurePa" type="number" step="1" min="1" value="101225" />
+                <small>Pa</small>
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>Recovery deltaP</span>
+              <span class="input-control">
+                <input data-default-input="extractionRecoveryPressureDropPa" type="number" step="1" min="0" value="290" />
                 <small>Pa</small>
               </span>
             </label>
@@ -602,7 +609,7 @@
               </span>
             </label>
             <label class="input-row">
-              <span>Air pressure</span>
+              <span>Ambient pressure</span>
               <span class="input-control">
                 <input data-default-input="extractionAirPressurePa" type="number" step="100" min="1" value="101325" />
                 <small>Pa</small>
@@ -628,6 +635,18 @@
             <div class="section-row estimate-row">
               <strong>Humid-air volume factor *</strong>
               <span><output data-extraction-output="humidAirVolumeFactor">0</output>x</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Cavity pressure lift *</strong>
+              <span><output data-extraction-output="cavityPressureLiftPa">0</output> Pa</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Recovery deltaP *</strong>
+              <span><output data-extraction-output="extractionRecoveryPressureDropPa">0</output> Pa</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>DeltaP over fans *</strong>
+              <span><output data-extraction-output="extractionFanDeltaPPa">0</output> Pa</span>
             </div>
             <div class="section-row estimate-row">
               <strong>Corrected wet-air volume *</strong>
@@ -659,6 +678,6 @@
     </section>
   </main>
 
-  <script type="module" src="./app.js?v=phase7-extraction"></script>
+  <script type="module" src="./app.js?v=phase7-cavity-pressure"></script>
 </body>
 </html>

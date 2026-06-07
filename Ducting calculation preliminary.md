@@ -250,7 +250,11 @@ Inputs:
 - Number of extraction fans
 - Fan grouping, if multiple fans share one duct system
 - Airflow per fan or fan group
-- Target pressure before and after fan group
+- Cavity absolute pressure
+- Ambient absolute pressure
+- Heat recovery or condenser pressure drop
+- Calculated DeltaP over the extraction fans
+- Target pressure before and after fan group, if needed later for detailed duct/system modeling
 - Extraction air temperature
 - Absolute moisture weight, for example g water/kg dry air
 - Ducting per fan or fan group
@@ -268,6 +272,11 @@ Rules and warnings:
 - Corrected humid-air volume flow is also a calculated result. It should be derived from dry-air flow, absolute moisture weight, temperature, and pressure.
 - Temperature and absolute moisture content together can increase the actual extraction volume flow significantly, so the extraction calculation should distinguish dry-airflow target from calculated relative humidity and corrected humid-air volume flow.
 - The extraction fan VFD estimate should use the corrected humid-air volume flow when checking fan capacity, while still showing that the result is indicative and the real machine is controlled by PLC PID.
+- Cavity absolute pressure must be editable. Lower cavity absolute pressure increases the extraction fan pressure lift and increases corrected humid-air volume flow.
+- Default cavity absolute pressure for the first extraction sizing pass should be ambient minus 100 Pa.
+- DeltaP over the extraction fans should be calculated from ambient absolute pressure minus cavity absolute pressure, plus heat recovery/condenser pressure drop, and then used as the fan duty pressure for curve lookup.
+- Heat recovery or condenser pressure drop must be editable. A first default may use about 290 Pa for the exhaust side based on the cross-flow heat exchanger example, while supply-side pressure drop may be different.
+- The heat recovery/condenser section is included because the extraction fans must push exhaust air through it to recover heat for stable inlet temperature and building heating in winter.
 - The tool should warn if moisture and temperature expansion push the extraction demand above nominal 50 Hz capacity or toward/above the 60 Hz ramp allowance.
 
 Extraction temperature and humidity should be treated by extraction area. The air is expected to become warmer and more humid along the extraction path. As a first simplifying assumption, the tool may treat the target extraction temperature as the same across all extraction areas, while still allowing humidity and load distribution to be refined later.

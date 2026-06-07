@@ -99,6 +99,8 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Add number of extraction fans.
 - [x] Add airflow per extraction fan.
 - [x] Add power per extraction fan.
+- [x] Add editable cavity absolute pressure and derive DeltaP over extraction fans from ambient minus cavity pressure.
+- [x] Add editable heat recovery/condenser pressure drop and include it in extraction fan DeltaP.
 - [x] Use permanent IRT/4-450 fan defaults for extraction fan airflow and power.
 - [ ] Add fan-curve data entry for IRT/4-450 airflow versus static pressure.
 - [x] Add metric fan library JSON with IRT/4-450 50 Hz curve data.
@@ -112,6 +114,8 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Add editable absolute moisture weight input for extraction control, for example g water/kg dry air.
 - [x] Calculate relative humidity from absolute moisture weight, temperature, and air pressure.
 - [x] Calculate humid-air volume increase from absolute moisture weight, temperature, pressure, and dry-air flow.
+- [x] Use cavity absolute pressure in humid-air volume correction.
+- [x] Use default cavity absolute pressure of ambient minus 100 Pa for Phase 7 extraction sizing.
 - [x] Show dry-airflow target, calculated relative humidity, and corrected wet-air volume flow separately.
 - [ ] Add cavity pressure target and serial airflow target as extraction control inputs.
 - [x] Warn if extraction pull is too low for negative pressure, humidity removal, or magnetron temperature control.

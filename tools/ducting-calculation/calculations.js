@@ -1,4 +1,4 @@
-import { getDefaultFanForRole } from "./fanLibrary.js?v=phase7-extraction";
+import { getDefaultFanForRole } from "./fanLibrary.js?v=phase7-cavity-pressure";
 
 const SECONDS_PER_HOUR = 3600;
 const STANDARD_AIR_TEMPERATURE_K = 293.15;
@@ -289,15 +289,18 @@ export function calculateExtractionControl(defaults, cavityBalance) {
   const extractionFanCount = positiveNumber(defaults.extractionFanCount);
   const extractionAirflowPerFanM3h = positiveNumber(defaults.extractionAirflowPerFanM3h);
   const extractionFanPowerW = positiveNumber(defaults.extractionFanPowerW);
-  const extractionStaticPressurePa = positiveNumber(defaults.extractionStaticPressurePa);
+  const extractionCavityAbsolutePressurePa = positiveNumber(defaults.extractionCavityAbsolutePressurePa) || STANDARD_AIR_PRESSURE_PA;
+  const extractionRecoveryPressureDropPa = positiveNumber(defaults.extractionRecoveryPressureDropPa);
   const extractionTemperatureC = numberOrZero(defaults.extractionTemperatureC);
   const extractionAbsoluteMoistureGKg = positiveNumber(defaults.extractionAbsoluteMoistureGKg);
   const extractionAirPressurePa = positiveNumber(defaults.extractionAirPressurePa) || STANDARD_AIR_PRESSURE_PA;
+  const cavityPressureLiftPa = Math.max(0, extractionAirPressurePa - extractionCavityAbsolutePressurePa);
+  const extractionFanDeltaPPa = cavityPressureLiftPa + extractionRecoveryPressureDropPa;
   const extractionControlMarginPercent = positiveNumber(defaults.extractionControlMarginPercent);
   const serialCavityAirflowM3h = positiveNumber(cavityBalance.serialCavityAirflowM3h);
   const dryAirflowTargetM3h = serialCavityAirflowM3h * (1 + extractionControlMarginPercent / 100);
   const humidityRatioKgKg = extractionAbsoluteMoistureGKg / 1000;
-  const vaporPressurePa = calculateVaporPressure(humidityRatioKgKg, extractionAirPressurePa);
+  const vaporPressurePa = calculateVaporPressure(humidityRatioKgKg, extractionCavityAbsolutePressurePa);
   const saturationVaporPressurePa = calculateSaturationVaporPressure(extractionTemperatureC);
   const calculatedRelativeHumidityPercent = saturationVaporPressurePa > 0
     ? (vaporPressurePa / saturationVaporPressurePa) * 100
@@ -305,11 +308,11 @@ export function calculateExtractionControl(defaults, cavityBalance) {
   const humidAirVolumeFactor = calculateHumidAirVolumeFactor({
     temperatureC: extractionTemperatureC,
     humidityRatioKgKg,
-    pressurePa: extractionAirPressurePa
+    pressurePa: extractionCavityAbsolutePressurePa
   });
   const correctedWetAirVolumeFlowM3h = dryAirflowTargetM3h * humidAirVolumeFactor;
   const requiredWetFlowPerFanM3h = extractionFanCount > 0 ? correctedWetAirVolumeFlowM3h / extractionFanCount : 0;
-  const curveFlowPerFanAt50HzM3h = getFlowAtPressure(processFan.staticPressureCurve50Hz, extractionStaticPressurePa);
+  const curveFlowPerFanAt50HzM3h = getFlowAtPressure(processFan.staticPressureCurve50Hz, extractionFanDeltaPPa);
   const totalExtractionCapacityAt50HzM3h = extractionFanCount * curveFlowPerFanAt50HzM3h;
   const processFanFrequencyHz = positiveNumber(defaults.processFanFrequencyHz);
   const processFanMaxFrequencyHz = positiveNumber(defaults.processFanMaxFrequencyHz);
@@ -330,6 +333,10 @@ export function calculateExtractionControl(defaults, cavityBalance) {
 
   if (serialCavityAirflowM3h <= 0) {
     warnings.push({ level: "warning", message: "Serial cavity airflow is not available for extraction control." });
+  }
+
+  if (extractionCavityAbsolutePressurePa >= extractionAirPressurePa) {
+    warnings.push({ level: "warning", message: "Cavity absolute pressure should stay below ambient pressure for extraction control." });
   }
 
   if (calculatedRelativeHumidityPercent > 100) {
@@ -356,7 +363,10 @@ export function calculateExtractionControl(defaults, cavityBalance) {
     extractionFanCount,
     extractionAirflowPerFanM3h,
     extractionFanPowerW,
-    extractionStaticPressurePa,
+    extractionCavityAbsolutePressurePa,
+    extractionRecoveryPressureDropPa,
+    cavityPressureLiftPa,
+    extractionFanDeltaPPa,
     extractionTemperatureC,
     extractionAbsoluteMoistureGKg,
     extractionAirPressurePa,

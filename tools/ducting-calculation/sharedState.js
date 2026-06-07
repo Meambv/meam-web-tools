@@ -1,5 +1,5 @@
-import { DEFAULTS } from "./constants.js?v=phase7-extraction";
-import { calculateCavityBalance, calculateExtractionControl, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=phase7-extraction";
+import { DEFAULTS } from "./constants.js?v=phase7-cavity-pressure";
+import { calculateCavityBalance, calculateExtractionControl, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=phase7-cavity-pressure";
 
 const subscribers = new Set();
 const STORAGE_KEYS = Object.freeze({
@@ -107,12 +107,10 @@ function getProcessFanState() {
 function getDerivedFanDefaults(fanState) {
   const inputPowerKw = Number(fanState.processFanInputPowerKw);
   const airflowM3h = Number(fanState.processFanWorkpointAirflowM3h);
-  const staticPressurePa = Number(fanState.processFanStaticPressurePa);
 
   return {
     ...fanState,
     ...(Number.isFinite(airflowM3h) ? { pushAirflowPerInletM3h: airflowM3h, extractionAirflowPerFanM3h: airflowM3h } : {}),
-    ...(Number.isFinite(staticPressurePa) ? { extractionStaticPressurePa: staticPressurePa } : {}),
     ...(Number.isFinite(inputPowerKw) ? {
       pushInletFanPowerW: inputPowerKw * 1000,
       extractionFanPowerW: inputPowerKw * 1000
