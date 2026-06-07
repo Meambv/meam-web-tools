@@ -132,7 +132,7 @@ The tool should therefore treat extraction as a controlled downstream actuator, 
 
 The real fan speed control is handled by PLC PID, not by the web tool. The web tool should show indicative VFD settings only. The PLC target range for cavity pressure is approximately -2 to -10 Pa.
 
-Extraction control will also need relative humidity and temperature inputs. These values affect how hard extraction should pull: enough to remove humidity and protect magnetrons, but not so much that useful heat transfer/convection in the cavity is lost.
+Extraction control will also need extraction temperature and absolute moisture weight inputs. Relative humidity and corrected humid-air volume flow should be calculated from absolute moisture, temperature, pressure, and dry-air flow. These calculated values affect how hard extraction should pull: enough to remove humidity and protect magnetrons, but not so much that useful heat transfer/convection in the cavity is lost.
 
 ## Main Calculation Sections
 
@@ -252,9 +252,7 @@ Inputs:
 - Airflow per fan or fan group
 - Target pressure before and after fan group
 - Extraction air temperature
-- Extraction relative humidity
 - Absolute moisture weight, for example g water/kg dry air
-- Dry-airflow target and corrected wet-air volume flow
 - Ducting per fan or fan group
 - Control mode note: humidity based, temperature based, or fixed
 
@@ -265,8 +263,10 @@ Rules and warnings:
 - The tool should flag configurations where extraction cannot maintain below-ambient pressure.
 - The tool should warn when extraction pull is likely too high for the desired convection/residence behavior in the cavity.
 - The tool should warn when extraction pull is likely too low for humidity containment or magnetron temperature control.
-- Extraction control should later include relative humidity and temperature because downstream airflow demand depends on both process moisture and heat removal.
-- Extraction control must include absolute moisture weight as an editable value. Temperature and absolute moisture content together can increase the actual extraction volume flow significantly, so the extraction calculation should distinguish dry-airflow target from corrected humid-air volume flow.
+- Extraction control should include temperature and absolute moisture weight because downstream airflow demand depends on both process moisture and heat removal.
+- Relative humidity is a calculated result, not a primary input. It should be calculated from absolute moisture weight, extraction temperature, and air pressure.
+- Corrected humid-air volume flow is also a calculated result. It should be derived from dry-air flow, absolute moisture weight, temperature, and pressure.
+- Temperature and absolute moisture content together can increase the actual extraction volume flow significantly, so the extraction calculation should distinguish dry-airflow target from calculated relative humidity and corrected humid-air volume flow.
 - The extraction fan VFD estimate should use the corrected humid-air volume flow when checking fan capacity, while still showing that the result is indicative and the real machine is controlled by PLC PID.
 - The tool should warn if moisture and temperature expansion push the extraction demand above nominal 50 Hz capacity or toward/above the 60 Hz ramp allowance.
 
