@@ -149,6 +149,25 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [x] Verify all edited inputs update results immediately.
 - [x] Verify access redirect still works.
 
+## Phase 9b: Cross Heat Exchanger Control
+
+- [ ] Add cross-flow heat exchanger model before duct segment builder work.
+- [ ] Add wet-side inlet definition: 45 degrees C and high RH process exhaust.
+- [ ] Calculate wet-side outlet state after recovery and condensation.
+- [ ] Calculate condensate flow and define drain-to-client-water-drain requirement.
+- [ ] Add dry-side inlet definition from seasonal outdoor weather input.
+- [ ] Add dry-side target outlet of 20 degrees C with minimal RH as practical.
+- [ ] Add control rule: if outlet RH at belt end is too high, reduce line speed to increase drying residence time.
+- [ ] Add control rule: do not force post-heater as first action for high outlet RH; use process speed control first.
+- [ ] Add hot-weather rule: if outside air is too hot, flag client decision for optional air conditioning.
+- [ ] Define too-hot threshold for outside air as 28 to 30 degrees C with warning and fail bands.
+- [ ] Add magnetron safety warning: high inlet temperature can harm magnetrons and make the process infeasible.
+- [ ] Add control rule: if heat exchanger overshoots target dry outlet temperature, require bypass or mixing control.
+- [ ] Add winter operating mode with optional extra push-in fan through heat-recovery path.
+- [ ] Add summer operating mode where outside-air input fan is off.
+- [ ] Add summer inlet strategy options: client mesh inlet or diverter valve to perforated wall tube.
+- [ ] Add no-draft check/warning for summer perforated tube concept.
+
 ## Phase 10: Duct Segment Builder Later
 
 - [ ] Add push duct segment list.
@@ -193,7 +212,7 @@ The approach should be safe and incremental: build one useful piece, verify it, 
 - [ ] Add catalogue pressure loss.
 - [ ] Add price estimate.
 - [ ] Add bill of materials.
-- [ ] Add heat exchanger or condenser calculations after airflow and pressure behavior is reliable.
+- [ ] Extend heat-recovery model with catalogue-specific component sizing and cost options.
 
 ## Immediate Next Step
 

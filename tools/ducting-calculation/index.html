@@ -709,6 +709,203 @@
           </div>
         </div>
       </section>
+
+      <section class="panel hx-panel" aria-labelledby="hx-title">
+        <div class="panel-header compact">
+          <h2 id="hx-title">Heat Exchanger Control (Phase 9b)</h2>
+          <span class="panel-state">Cross-flow</span>
+        </div>
+        <div class="split-grid">
+          <form class="defaults-form" data-hx-form>
+            <label class="input-row wide-form-row">
+              <span>Candidate name</span>
+              <span class="input-control text-control">
+                <input data-default-input="heatExchangerCandidateName" type="text" value="Recuperator N8080 -101040 E2" />
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Outside air temperature</span>
+              <span class="input-control">
+                <input data-default-input="outsideAirTemperatureC" type="number" step="0.1" value="10" />
+                <small>degrees C</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Outside air RH</span>
+              <span class="input-control">
+                <input data-default-input="outsideAirRelativeHumidityPercent" type="number" step="1" min="0" max="100" value="80" />
+                <small>%</small>
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>Dry outlet target</span>
+              <span class="input-control">
+                <input data-default-input="targetDryOutletTemperatureC" type="number" step="0.1" value="20" />
+                <small>degrees C</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>HX effectiveness</span>
+              <span class="input-control">
+                <input data-default-input="heatExchangerEffectiveness" type="number" step="0.01" min="0" max="1" value="0.6" />
+                <small>0-1</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Overall U-value</span>
+              <span class="input-control">
+                <input data-default-input="heatExchangerOverallUValueWm2K" type="number" step="1" min="1" value="35" />
+                <small>W/m2K</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Wet face velocity</span>
+              <span class="input-control">
+                <input data-default-input="heatExchangerWetFaceVelocityMs" type="number" step="0.1" min="0.1" value="2.5" />
+                <small>m/s</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Dry face velocity</span>
+              <span class="input-control">
+                <input data-default-input="heatExchangerDryFaceVelocityMs" type="number" step="0.1" min="0.1" value="2.5" />
+                <small>m/s</small>
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>Candidate width</span>
+              <span class="input-control">
+                <input data-default-input="heatExchangerCandidateWidthM" type="number" step="0.01" min="0.1" value="1.1" />
+                <small>m</small>
+              </span>
+            </label>
+            <label class="input-row important">
+              <span>Candidate height</span>
+              <span class="input-control">
+                <input data-default-input="heatExchangerCandidateHeightM" type="number" step="0.01" min="0.1" value="1.1" />
+                <small>m</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Active area factor</span>
+              <span class="input-control">
+                <input data-default-input="heatExchangerActiveAreaFactor" type="number" step="0.01" min="0.1" max="1" value="0.9" />
+                <small>0-1</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Bypass flow</span>
+              <span class="input-control">
+                <input data-default-input="heatExchangerBypassPercent" type="number" step="1" min="0" max="95" value="0" />
+                <small>%</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>RICH recovered heat</span>
+              <span class="input-control">
+                <input data-default-input="richCalibrationRecoveredHeatKw" type="number" step="0.1" min="0" value="164.6" />
+                <small>kW</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>RICH LMTD</span>
+              <span class="input-control">
+                <input data-default-input="richCalibrationLMTDC" type="number" step="0.1" min="0" value="33" />
+                <small>degrees C</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Hot outside warning</span>
+              <span class="input-control">
+                <input data-default-input="hotOutsideWarningTemperatureC" type="number" step="0.1" value="28" />
+                <small>degrees C</small>
+              </span>
+            </label>
+            <label class="input-row">
+              <span>Hot outside fail</span>
+              <span class="input-control">
+                <input data-default-input="hotOutsideFailTemperatureC" type="number" step="0.1" value="30" />
+                <small>degrees C</small>
+              </span>
+            </label>
+          </form>
+          <div class="section-stack" aria-label="Heat exchanger outputs">
+            <div class="section-row">
+              <strong>Dry outlet predicted</strong>
+              <span><output data-hx-output="dryOutletTemperatureC">0</output> degrees C</span>
+            </div>
+            <div class="section-row">
+              <strong>Wet outlet predicted</strong>
+              <span><output data-hx-output="wetOutletTemperatureC">0</output> degrees C</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Condensate flow *</strong>
+              <span><output data-hx-output="condensateFlowKgH">0</output> kg/h</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Recovered heat *</strong>
+              <span><output data-hx-output="recoveredHeatKw">0</output> kW</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Required thermal surface *</strong>
+              <span><output data-hx-output="requiredThermalSurfaceM2">0</output> m2</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Required wet-side face area *</strong>
+              <span><output data-hx-output="requiredWetFaceAreaM2">0</output> m2</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Required dry-side face area *</strong>
+              <span><output data-hx-output="requiredDryFaceAreaM2">0</output> m2</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Candidate gross face area *</strong>
+              <span><output data-hx-output="candidateGrossFaceAreaM2">0</output> m2</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Candidate effective area *</strong>
+              <span><output data-hx-output="candidateEffectiveFaceAreaM2">0</output> m2</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Wet face velocity on candidate *</strong>
+              <span><output data-hx-output="candidateWetFaceVelocityMs">0</output> m/s</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Dry face velocity on candidate *</strong>
+              <span><output data-hx-output="candidateDryFaceVelocityMs">0</output> m/s</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Candidate wet area margin *</strong>
+              <span><output data-hx-output="wetFaceAreaMarginM2">0</output> m2</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Candidate dry area margin *</strong>
+              <span><output data-hx-output="dryFaceAreaMarginM2">0</output> m2</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Candidate name *</strong>
+              <span><output data-hx-output="candidateName">-</output></span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Candidate section status *</strong>
+              <span><output data-hx-output="candidateSectionStatus">Unknown</output></span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>RICH implied UA *</strong>
+              <span><output data-hx-output="richImpliedUAKwK">0</output> kW/K</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>RICH-implied U-value *</strong>
+              <span><output data-hx-output="richImpliedUValueWm2K">0</output> W/m2K</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Recommended line speed *</strong>
+              <span><output data-hx-output="recommendedLineSpeedPercent">0</output>%</span>
+            </div>
+          </div>
+        </div>
+        <ul class="warning-list" data-hx-warnings></ul>
+      </section>
     </section>
   </main>
 

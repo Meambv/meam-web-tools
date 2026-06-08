@@ -1,5 +1,5 @@
 import { DEFAULTS } from "./constants.js?v=working-defaults";
-import { calculateCavityBalance, calculateExtractionControl, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=working-defaults";
+import { calculateCavityBalance, calculateExtractionControl, calculateHeatExchangerControl, calculateMagnetronCooling, calculatePushInlets } from "./calculations.js?v=working-defaults";
 
 const subscribers = new Set();
 const STORAGE_KEYS = Object.freeze({
@@ -13,7 +13,11 @@ export const sharedState = {
   magnetronCooling: calculateMagnetronCooling(DEFAULTS),
   pushInlets: calculatePushInlets(DEFAULTS),
   cavityBalance: calculateCavityBalance(DEFAULTS, calculateMagnetronCooling(DEFAULTS), calculatePushInlets(DEFAULTS)),
-  extractionControl: calculateExtractionControl(DEFAULTS, calculateCavityBalance(DEFAULTS, calculateMagnetronCooling(DEFAULTS), calculatePushInlets(DEFAULTS)))
+  extractionControl: calculateExtractionControl(DEFAULTS, calculateCavityBalance(DEFAULTS, calculateMagnetronCooling(DEFAULTS), calculatePushInlets(DEFAULTS))),
+  heatExchangerControl: calculateHeatExchangerControl(
+    DEFAULTS,
+    calculateExtractionControl(DEFAULTS, calculateCavityBalance(DEFAULTS, calculateMagnetronCooling(DEFAULTS), calculatePushInlets(DEFAULTS)))
+  )
 };
 
 export function updateSharedState(patch) {
@@ -91,6 +95,7 @@ function updateCalculatedState() {
   sharedState.pushInlets = calculatePushInlets(sharedState.defaults);
   sharedState.cavityBalance = calculateCavityBalance(sharedState.defaults, sharedState.magnetronCooling, sharedState.pushInlets);
   sharedState.extractionControl = calculateExtractionControl(sharedState.defaults, sharedState.cavityBalance);
+  sharedState.heatExchangerControl = calculateHeatExchangerControl(sharedState.defaults, sharedState.extractionControl);
 }
 
 function getProcessFanState() {

@@ -388,6 +388,166 @@ export function calculateExtractionControl(defaults, cavityBalance) {
   };
 }
 
+export function calculateHeatExchangerControl(defaults, extractionControl) {
+  const wetInletTemperatureC = numberOrZero(defaults.extractionTemperatureC);
+  const wetInletHumidityRatioKgKg = positiveNumber(defaults.extractionAbsoluteMoistureGKg) / 1000;
+  const wetSidePressurePa = positiveNumber(defaults.extractionCavityAbsolutePressurePa) || STANDARD_AIR_PRESSURE_PA;
+  const dryInletTemperatureC = numberOrZero(defaults.outsideAirTemperatureC);
+  const dryInletRelativeHumidityPercent = clamp(numberOrZero(defaults.outsideAirRelativeHumidityPercent), 0, 100);
+  const drySidePressurePa = positiveNumber(defaults.extractionAirPressurePa) || STANDARD_AIR_PRESSURE_PA;
+  const targetDryOutletTemperatureC = numberOrZero(defaults.targetDryOutletTemperatureC);
+  const effectiveness = clamp(numberOrZero(defaults.heatExchangerEffectiveness), 0, 1);
+  const overallUValueWm2K = positiveNumber(defaults.heatExchangerOverallUValueWm2K);
+  const wetFaceVelocityMs = positiveNumber(defaults.heatExchangerWetFaceVelocityMs);
+  const dryFaceVelocityMs = positiveNumber(defaults.heatExchangerDryFaceVelocityMs);
+  const candidateWidthM = positiveNumber(defaults.heatExchangerCandidateWidthM);
+  const candidateHeightM = positiveNumber(defaults.heatExchangerCandidateHeightM);
+  const activeAreaFactor = clamp(numberOrZero(defaults.heatExchangerActiveAreaFactor), 0.1, 1);
+  const bypassPercent = clamp(numberOrZero(defaults.heatExchangerBypassPercent), 0, 95);
+  const throughHxFlowFactor = 1 - bypassPercent / 100;
+  const candidateName = typeof defaults.heatExchangerCandidateName === "string" && defaults.heatExchangerCandidateName.trim().length > 0
+    ? defaults.heatExchangerCandidateName.trim()
+    : "Candidate HX";
+  const richCalibrationRecoveredHeatKw = positiveNumber(defaults.richCalibrationRecoveredHeatKw);
+  const richCalibrationLMTDC = positiveNumber(defaults.richCalibrationLMTDC);
+  const hotOutsideWarningTemperatureC = numberOrZero(defaults.hotOutsideWarningTemperatureC);
+  const hotOutsideFailTemperatureC = numberOrZero(defaults.hotOutsideFailTemperatureC);
+  const dryAirflowTargetM3h = positiveNumber(extractionControl.dryAirflowTargetM3h);
+  const dryAirDensityKgM3 = positiveNumber(defaults.airDensityKgM3);
+
+  const dryInletHumidityRatioKgKg = getHumidityRatioFromRelativeHumidity(dryInletTemperatureC, dryInletRelativeHumidityPercent, drySidePressurePa);
+  const wetInletVaporPressurePa = calculateVaporPressure(wetInletHumidityRatioKgKg, wetSidePressurePa);
+  const wetInletDewPointC = calculateDewPointC(wetInletVaporPressurePa);
+  const dryInletHumidityRatioGKg = dryInletHumidityRatioKgKg * 1000;
+
+  const dryOutletTemperatureC = dryInletTemperatureC + effectiveness * (wetInletTemperatureC - dryInletTemperatureC);
+  const wetOutletTemperatureC = wetInletTemperatureC - effectiveness * (wetInletTemperatureC - dryInletTemperatureC);
+  const wetOutletSaturatedHumidityRatioKgKg = getSaturationHumidityRatio(wetOutletTemperatureC, wetSidePressurePa);
+  const wetOutletHumidityRatioKgKg = Math.min(wetInletHumidityRatioKgKg, wetOutletSaturatedHumidityRatioKgKg);
+  const condensateKgPerKgDryAir = Math.max(0, wetInletHumidityRatioKgKg - wetOutletHumidityRatioKgKg);
+
+  const dryMassFlowKgS = (dryAirflowTargetM3h / SECONDS_PER_HOUR) * dryAirDensityKgM3;
+  const drySideCpKjKgK = 1.006 + 1.86 * dryInletHumidityRatioKgKg;
+  const recoveredHeatKw = dryMassFlowKgS * drySideCpKjKgK * Math.max(0, dryOutletTemperatureC - dryInletTemperatureC);
+  const drySideHeatNeededToTargetKw = dryMassFlowKgS * drySideCpKjKgK * Math.max(0, targetDryOutletTemperatureC - dryInletTemperatureC);
+  const lineSpeedFactor = drySideHeatNeededToTargetKw > 0 ? clamp(recoveredHeatKw / drySideHeatNeededToTargetKw, 0, 1) : 1;
+  const recommendedLineSpeedPercent = lineSpeedFactor * 100;
+
+  const deltaT1C = wetInletTemperatureC - dryOutletTemperatureC;
+  const deltaT2C = wetOutletTemperatureC - dryInletTemperatureC;
+  const logMeanTemperatureDifferenceC = calculateLogMeanTemperatureDifference(deltaT1C, deltaT2C);
+  const requiredThermalSurfaceM2 = overallUValueWm2K > 0 && logMeanTemperatureDifferenceC > 0
+    ? (recoveredHeatKw * 1000) / (overallUValueWm2K * logMeanTemperatureDifferenceC)
+    : 0;
+
+  const wetHumidAirVolumeFactor = calculateHumidAirVolumeFactor({
+    temperatureC: wetInletTemperatureC,
+    humidityRatioKgKg: wetInletHumidityRatioKgKg,
+    pressurePa: wetSidePressurePa
+  });
+  const dryHumidAirVolumeFactor = calculateHumidAirVolumeFactor({
+    temperatureC: dryInletTemperatureC,
+    humidityRatioKgKg: dryInletHumidityRatioKgKg,
+    pressurePa: drySidePressurePa
+  });
+  const wetSideWetVolumeFlowM3h = dryAirflowTargetM3h * wetHumidAirVolumeFactor * throughHxFlowFactor;
+  const drySideWetVolumeFlowM3h = dryAirflowTargetM3h * dryHumidAirVolumeFactor * throughHxFlowFactor;
+  const requiredWetFaceAreaM2 = wetFaceVelocityMs > 0 ? (wetSideWetVolumeFlowM3h / SECONDS_PER_HOUR) / wetFaceVelocityMs : 0;
+  const requiredDryFaceAreaM2 = dryFaceVelocityMs > 0 ? (drySideWetVolumeFlowM3h / SECONDS_PER_HOUR) / dryFaceVelocityMs : 0;
+  const candidateGrossFaceAreaM2 = candidateWidthM * candidateHeightM;
+  const candidateEffectiveFaceAreaM2 = candidateGrossFaceAreaM2 * activeAreaFactor;
+  const candidateWetFaceVelocityMs = candidateEffectiveFaceAreaM2 > 0
+    ? (wetSideWetVolumeFlowM3h / SECONDS_PER_HOUR) / candidateEffectiveFaceAreaM2
+    : 0;
+  const candidateDryFaceVelocityMs = candidateEffectiveFaceAreaM2 > 0
+    ? (drySideWetVolumeFlowM3h / SECONDS_PER_HOUR) / candidateEffectiveFaceAreaM2
+    : 0;
+  const wetFaceAreaMarginM2 = candidateEffectiveFaceAreaM2 - requiredWetFaceAreaM2;
+  const dryFaceAreaMarginM2 = candidateEffectiveFaceAreaM2 - requiredDryFaceAreaM2;
+  const candidateSectionStatus = wetFaceAreaMarginM2 >= 0 && dryFaceAreaMarginM2 >= 0 ? "Fits" : "Too small";
+  const richImpliedUAKwK = richCalibrationLMTDC > 0 ? richCalibrationRecoveredHeatKw / richCalibrationLMTDC : 0;
+  const richImpliedUValueWm2K = requiredThermalSurfaceM2 > 0
+    ? (richImpliedUAKwK * 1000) / requiredThermalSurfaceM2
+    : 0;
+  const condensateFlowKgH = condensateKgPerKgDryAir * dryMassFlowKgS * SECONDS_PER_HOUR;
+
+  const warnings = [];
+
+  if (dryAirflowTargetM3h <= 0) {
+    warnings.push({ level: "warning", message: "Heat exchanger sizing needs a valid dry airflow target." });
+  }
+
+  if (dryOutletTemperatureC < targetDryOutletTemperatureC) {
+    warnings.push({ level: "warning", message: "Heat exchanger cannot reach dry outlet target; reduce line speed to protect final RH." });
+  }
+
+  if (dryOutletTemperatureC > targetDryOutletTemperatureC) {
+    warnings.push({ level: "warning", message: "Heat exchanger outlet is above dry target; bypass or mixing control is required." });
+  }
+
+  if (dryInletTemperatureC >= hotOutsideFailTemperatureC) {
+    warnings.push({ level: "fail", message: "Outside air is in the too-hot band and can make magnetron process infeasible without cooling." });
+  } else if (dryInletTemperatureC >= hotOutsideWarningTemperatureC) {
+    warnings.push({ level: "warning", message: "Outside air is hot; client should decide on optional air conditioning." });
+  }
+
+  if (condensateFlowKgH > 0) {
+    warnings.push({ level: "warning", message: "Condensate is expected; confirm drain connection to client water drain." });
+  }
+
+  if (candidateGrossFaceAreaM2 <= 0) {
+    warnings.push({ level: "warning", message: "Enter candidate heat exchanger width and height to compare with RICH section size." });
+  }
+
+  if (candidateEffectiveFaceAreaM2 > 0 && wetFaceAreaMarginM2 < 0) {
+    warnings.push({ level: "warning", message: "Candidate section is too small on wet side for the configured face velocity target." });
+  }
+
+  if (candidateEffectiveFaceAreaM2 > 0 && dryFaceAreaMarginM2 < 0) {
+    warnings.push({ level: "warning", message: "Candidate section is too small on dry side for the configured face velocity target." });
+  }
+
+  return {
+    wetInletTemperatureC,
+    wetInletHumidityRatioGKg: wetInletHumidityRatioKgKg * 1000,
+    wetInletDewPointC,
+    wetOutletTemperatureC,
+    wetOutletHumidityRatioGKg: wetOutletHumidityRatioKgKg * 1000,
+    condensateFlowKgH,
+    dryInletTemperatureC,
+    dryInletRelativeHumidityPercent,
+    dryInletHumidityRatioGKg,
+    dryOutletTemperatureC,
+    targetDryOutletTemperatureC,
+    recoveredHeatKw,
+    drySideHeatNeededToTargetKw,
+    recommendedLineSpeedPercent,
+    requiredThermalSurfaceM2,
+    requiredWetFaceAreaM2,
+    requiredDryFaceAreaM2,
+    candidateName,
+    candidateWidthM,
+    candidateHeightM,
+    activeAreaFactor,
+    bypassPercent,
+    throughHxFlowFactor,
+    candidateGrossFaceAreaM2,
+    candidateEffectiveFaceAreaM2,
+    candidateWetFaceVelocityMs,
+    candidateDryFaceVelocityMs,
+    wetFaceAreaMarginM2,
+    dryFaceAreaMarginM2,
+    candidateSectionStatus,
+    richCalibrationRecoveredHeatKw,
+    richCalibrationLMTDC,
+    richImpliedUAKwK,
+    richImpliedUValueWm2K,
+    logMeanTemperatureDifferenceC,
+    status: getCoolingStatus(warnings),
+    warnings
+  };
+}
+
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
@@ -413,6 +573,55 @@ function calculateHumidAirVolumeFactor({ temperatureC, humidityRatioKgKg, pressu
   return (temperatureK / STANDARD_AIR_TEMPERATURE_K)
     * (1 + WATER_VAPOR_VOLUME_RATIO * humidityRatioKgKg)
     * (STANDARD_AIR_PRESSURE_PA / pressurePa);
+}
+
+function getHumidityRatioFromRelativeHumidity(temperatureC, relativeHumidityPercent, pressurePa) {
+  if (pressurePa <= 0) {
+    return 0;
+  }
+
+  const saturationVaporPressurePa = calculateSaturationVaporPressure(temperatureC);
+  const relativeHumidityRatio = clamp(relativeHumidityPercent / 100, 0, 1);
+  const vaporPressurePa = relativeHumidityRatio * saturationVaporPressurePa;
+  const denominator = pressurePa - vaporPressurePa;
+
+  if (denominator <= 0) {
+    return 0;
+  }
+
+  return DRY_AIR_WATER_RATIO * vaporPressurePa / denominator;
+}
+
+function getSaturationHumidityRatio(temperatureC, pressurePa) {
+  const saturationVaporPressurePa = calculateSaturationVaporPressure(temperatureC);
+  const denominator = pressurePa - saturationVaporPressurePa;
+
+  if (pressurePa <= 0 || denominator <= 0) {
+    return 0;
+  }
+
+  return DRY_AIR_WATER_RATIO * saturationVaporPressurePa / denominator;
+}
+
+function calculateDewPointC(vaporPressurePa) {
+  if (vaporPressurePa <= 0) {
+    return -273.15;
+  }
+
+  const alpha = Math.log(vaporPressurePa / 610.94);
+  return (243.04 * alpha) / (17.625 - alpha);
+}
+
+function calculateLogMeanTemperatureDifference(deltaT1C, deltaT2C) {
+  if (deltaT1C <= 0 || deltaT2C <= 0) {
+    return 0;
+  }
+
+  if (Math.abs(deltaT1C - deltaT2C) < 1e-6) {
+    return deltaT1C;
+  }
+
+  return (deltaT1C - deltaT2C) / Math.log(deltaT1C / deltaT2C);
 }
 
 function getFlowAtPressure(curvePoints, pressurePa) {

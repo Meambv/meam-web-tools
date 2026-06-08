@@ -37,6 +37,8 @@ const elements = {
   extractionWarnings: document.querySelector("[data-extraction-warnings]"),
   extractionMarginRow: document.querySelector("[data-extraction-margin-row]"),
   extractionFrequencyRow: document.querySelector("[data-extraction-frequency-row]"),
+  hxOutputs: document.querySelectorAll("[data-hx-output]"),
+  hxWarnings: document.querySelector("[data-hx-warnings]"),
   summaryOutputs: document.querySelectorAll("[data-summary-output]"),
   summaryExtractionMarginRow: document.querySelector("[data-summary-extraction-margin-row]"),
   summaryOverallRow: document.querySelector("[data-summary-overall-row]")
@@ -191,6 +193,19 @@ function renderOverallSummary(state) {
   elements.summaryOverallRow.classList.add(summary.overallStatusLevel);
 }
 
+function renderHeatExchangerControl(state) {
+  elements.hxOutputs.forEach((output) => {
+    const key = output.dataset.hxOutput;
+    const value = state.heatExchangerControl[key];
+
+    if (value !== undefined) {
+      output.textContent = typeof value === "string" ? value : formatNumber(value, key);
+    }
+  });
+
+  renderWarningList(elements.hxWarnings, state.heatExchangerControl.warnings);
+}
+
 function buildOverallSummary(state) {
   const statuses = [
     state.magnetronCooling.status,
@@ -218,6 +233,10 @@ function renderCoolingWarnings(warnings) {
 }
 
 function renderWarningList(list, warnings) {
+  if (!list) {
+    return;
+  }
+
   list.replaceChildren();
 
   warnings.forEach((warning) => {
@@ -335,6 +354,7 @@ function initializeApp() {
   subscribeToSharedState(renderPushInlets);
   subscribeToSharedState(renderCavityBalance);
   subscribeToSharedState(renderExtractionControl);
+  subscribeToSharedState(renderHeatExchangerControl);
   subscribeToSharedState(renderOverallSummary);
   bindDefaultInputs();
   bindStorageButtons();
