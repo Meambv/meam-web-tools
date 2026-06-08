@@ -10,6 +10,7 @@ const STORAGE_KEYS = Object.freeze({
 export const sharedState = {
   accessGranted: false,
   defaults: { ...DEFAULTS },
+  ductTreeNodes: createInitialDuctTreeNodes(),
   magnetronCooling: calculateMagnetronCooling(DEFAULTS),
   pushInlets: calculatePushInlets(DEFAULTS),
   cavityBalance: calculateCavityBalance(DEFAULTS, calculateMagnetronCooling(DEFAULTS), calculatePushInlets(DEFAULTS)),
@@ -19,6 +20,92 @@ export const sharedState = {
     calculateExtractionControl(DEFAULTS, calculateCavityBalance(DEFAULTS, calculateMagnetronCooling(DEFAULTS), calculatePushInlets(DEFAULTS)))
   )
 };
+
+export function updateDuctNode(nodeId, patch) {
+  sharedState.ductTreeNodes = sharedState.ductTreeNodes.map((node) => {
+    if (node.id !== nodeId) {
+      return node;
+    }
+
+    return {
+      ...node,
+      ...patch
+    };
+  });
+
+  notifySubscribers();
+}
+
+export function toggleDuctNode(nodeId) {
+  sharedState.ductTreeNodes = sharedState.ductTreeNodes.map((node) => {
+    if (node.id !== nodeId) {
+      return node;
+    }
+
+    return {
+      ...node,
+      collapsed: !node.collapsed
+    };
+  });
+
+  notifySubscribers();
+}
+
+export function addDuctChildNode(parentId) {
+  const parentNode = sharedState.ductTreeNodes.find((node) => node.id === parentId);
+
+  if (!parentNode) {
+    return;
+  }
+
+  const siblingCount = sharedState.ductTreeNodes.filter((node) => node.parentId === parentId).length;
+  const newNode = {
+    id: `node-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    parentId,
+    name: `${parentNode.kind === "push" ? "Push" : "Extraction"} Segment ${siblingCount + 1}`,
+    kind: parentNode.kind,
+    lengthM: 1,
+    collapsed: false
+  };
+
+  sharedState.ductTreeNodes = [...sharedState.ductTreeNodes, newNode].map((node) => {
+    if (node.id !== parentId) {
+      return node;
+    }
+
+    return {
+      ...node,
+      collapsed: false
+    };
+  });
+
+  notifySubscribers();
+}
+
+export function removeDuctNode(nodeId) {
+  const targetNode = sharedState.ductTreeNodes.find((node) => node.id === nodeId);
+
+  if (!targetNode || targetNode.parentId === null) {
+    return;
+  }
+
+  const nodesToRemove = new Set([nodeId]);
+  let keepSearching = true;
+
+  while (keepSearching) {
+    keepSearching = false;
+
+    sharedState.ductTreeNodes.forEach((node) => {
+      if (node.parentId && nodesToRemove.has(node.parentId) && !nodesToRemove.has(node.id)) {
+        nodesToRemove.add(node.id);
+        keepSearching = true;
+      }
+    });
+  }
+
+  sharedState.ductTreeNodes = sharedState.ductTreeNodes.filter((node) => !nodesToRemove.has(node.id));
+  notifySubscribers();
+}
 
 export function updateSharedState(patch) {
   Object.assign(sharedState, patch);
@@ -45,6 +132,7 @@ export function updateDefaultValues(patch) {
 
 export function resetDefaults() {
   sharedState.defaults = { ...DEFAULTS };
+  sharedState.ductTreeNodes = createInitialDuctTreeNodes();
   updateCalculatedState();
   notifySubscribers();
 }
@@ -130,4 +218,10 @@ function readSavedObject(key) {
   } catch {
     return null;
   }
+}
+
+function createInitialDuctTreeNodes() {
+  return Array.isArray(DEFAULTS.ductTreeRoots)
+    ? DEFAULTS.ductTreeRoots.map((node) => ({ ...node }))
+    : [];
 }

@@ -1,5 +1,5 @@
 import { ACCESS_CODE, ACCESS_MESSAGES, ACCESS_STORAGE_KEY } from "./constants.js?v=working-defaults";
-import { openCalculatorState, openProcessFanState, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, updateDefaultValue, updateDefaultValues, updateSharedState } from "./sharedState.js?v=working-defaults";
+import { addDuctChildNode, openCalculatorState, openProcessFanState, removeDuctNode, resetDefaults, saveCalculatorState, saveProcessFanState, sharedState, subscribeToSharedState, toggleDuctNode, updateDefaultValue, updateDefaultValues, updateDuctNode, updateSharedState } from "./sharedState.js?v=working-defaults";
 
 const REDIRECT_DELAY_MS = 1200;
 
@@ -39,6 +39,11 @@ const elements = {
   extractionFrequencyRow: document.querySelector("[data-extraction-frequency-row]"),
   hxOutputs: document.querySelectorAll("[data-hx-output]"),
   hxWarnings: document.querySelector("[data-hx-warnings]"),
+  ductOutputs: document.querySelectorAll("[data-duct-output]"),
+  pushTreeHost: document.querySelector('[data-duct-tree="push"]'),
+  extractionTreeHost: document.querySelector('[data-duct-tree="extraction"]'),
+  ductExpandButtons: document.querySelectorAll("[data-duct-expand]"),
+  ductCollapseButtons: document.querySelectorAll("[data-duct-collapse]"),
   summaryOutputs: document.querySelectorAll("[data-summary-output]"),
   summaryExtractionMarginRow: document.querySelector("[data-summary-extraction-margin-row]"),
   summaryOverallRow: document.querySelector("[data-summary-overall-row]")
@@ -206,6 +211,131 @@ function renderHeatExchangerControl(state) {
   renderWarningList(elements.hxWarnings, state.heatExchangerControl.warnings);
 }
 
+function renderDuctTree(state) {
+  const summary = buildDuctSummary(state.ductTreeNodes);
+
+  elements.ductOutputs.forEach((output) => {
+    const key = output.dataset.ductOutput;
+    const value = summary[key];
+
+    if (value !== undefined) {
+      output.textContent = typeof value === "string" ? value : formatNumber(value, key);
+    }
+  });
+
+  renderTreeSide(elements.pushTreeHost, state.ductTreeNodes, "push");
+  renderTreeSide(elements.extractionTreeHost, state.ductTreeNodes, "extraction");
+}
+
+function buildDuctSummary(nodes) {
+  const pushRoots = nodes.filter((node) => node.parentId === null && node.kind === "push");
+  const extractionRoots = nodes.filter((node) => node.parentId === null && node.kind === "extraction");
+  const pushTotalLengthM = nodes
+    .filter((node) => node.kind === "push")
+    .reduce((sum, node) => sum + toValidLength(node.lengthM), 0);
+  const extractionTotalLengthM = nodes
+    .filter((node) => node.kind === "extraction")
+    .reduce((sum, node) => sum + toValidLength(node.lengthM), 0);
+
+  return {
+    pushRootCount: pushRoots.length,
+    extractionRootCount: extractionRoots.length,
+    pushTotalLengthM,
+    extractionTotalLengthM
+  };
+}
+
+function renderTreeSide(container, nodes, kind) {
+  if (!container) {
+    return;
+  }
+
+  container.replaceChildren();
+  const rootNodes = nodes.filter((node) => node.parentId === null && node.kind === kind);
+  const list = document.createElement("ul");
+  list.className = "duct-tree-list";
+
+  rootNodes.forEach((rootNode) => {
+    list.append(createTreeNodeElement(rootNode, nodes));
+  });
+
+  container.append(list);
+}
+
+function createTreeNodeElement(node, allNodes) {
+  const item = document.createElement("li");
+  item.className = "duct-tree-node";
+
+  const row = document.createElement("div");
+  row.className = "duct-tree-row";
+
+  const children = allNodes.filter((candidate) => candidate.parentId === node.id);
+  const hasChildren = children.length > 0;
+
+  const toggleButton = document.createElement("button");
+  toggleButton.type = "button";
+  toggleButton.className = "tree-node-button";
+  toggleButton.textContent = hasChildren ? (node.collapsed ? "+" : "-") : "•";
+  toggleButton.disabled = !hasChildren;
+  toggleButton.addEventListener("click", () => toggleDuctNode(node.id));
+  row.append(toggleButton);
+
+  const nameInput = document.createElement("input");
+  nameInput.className = "tree-node-name";
+  nameInput.type = "text";
+  nameInput.value = node.name;
+  nameInput.addEventListener("input", () => updateDuctNode(node.id, { name: nameInput.value }));
+  row.append(nameInput);
+
+  const lengthInput = document.createElement("input");
+  lengthInput.className = "tree-node-length";
+  lengthInput.type = "number";
+  lengthInput.min = "0";
+  lengthInput.step = "0.1";
+  lengthInput.value = toValidLength(node.lengthM).toString();
+  lengthInput.addEventListener("input", () => updateDuctNode(node.id, { lengthM: Number(lengthInput.value) }));
+  row.append(lengthInput);
+
+  const lengthUnit = document.createElement("span");
+  lengthUnit.className = "tree-node-unit";
+  lengthUnit.textContent = "m";
+  row.append(lengthUnit);
+
+  const addButton = document.createElement("button");
+  addButton.type = "button";
+  addButton.className = "tree-node-action";
+  addButton.textContent = "+ child";
+  addButton.addEventListener("click", () => addDuctChildNode(node.id));
+  row.append(addButton);
+
+  if (node.parentId !== null) {
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "tree-node-action remove";
+    removeButton.textContent = "Delete";
+    removeButton.addEventListener("click", () => removeDuctNode(node.id));
+    row.append(removeButton);
+  }
+
+  item.append(row);
+
+  if (hasChildren && !node.collapsed) {
+    const childList = document.createElement("ul");
+    childList.className = "duct-tree-list";
+    children.forEach((childNode) => {
+      childList.append(createTreeNodeElement(childNode, allNodes));
+    });
+    item.append(childList);
+  }
+
+  return item;
+}
+
+function toValidLength(value) {
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? number : 0;
+}
+
 function buildOverallSummary(state) {
   const statuses = [
     state.magnetronCooling.status,
@@ -338,6 +468,37 @@ function bindStorageButtons() {
   });
 }
 
+function bindDuctTreeButtons() {
+  elements.ductExpandButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const kind = button.dataset.ductExpand;
+      setTreeCollapsed(kind, false);
+    });
+  });
+
+  elements.ductCollapseButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const kind = button.dataset.ductCollapse;
+      setTreeCollapsed(kind, true);
+    });
+  });
+}
+
+function setTreeCollapsed(kind, collapsed) {
+  const patch = sharedState.ductTreeNodes.map((node) => {
+    if (node.kind !== kind) {
+      return node;
+    }
+
+    return {
+      ...node,
+      collapsed
+    };
+  });
+
+  updateSharedState({ ductTreeNodes: patch });
+}
+
 function setAccessMessage(message, isWarning = false) {
   elements.accessMessage.textContent = message;
   elements.accessMessage.classList.toggle("warning", isWarning);
@@ -355,9 +516,11 @@ function initializeApp() {
   subscribeToSharedState(renderCavityBalance);
   subscribeToSharedState(renderExtractionControl);
   subscribeToSharedState(renderHeatExchangerControl);
+  subscribeToSharedState(renderDuctTree);
   subscribeToSharedState(renderOverallSummary);
   bindDefaultInputs();
   bindStorageButtons();
+  bindDuctTreeButtons();
 
   const accessGranted = hasValidAccess();
   updateSharedState({ accessGranted });

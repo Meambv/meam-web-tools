@@ -228,6 +228,11 @@ h2 {
   grid-row: 5;
 }
 
+.duct-tree-panel {
+  grid-column: 1 / 4;
+  grid-row: 6;
+}
+
 .panel-header {
   display: flex;
   align-items: flex-start;
@@ -539,6 +544,76 @@ output {
 .panel-note {
   margin: 8px;
   line-height: 1.55;
+}
+
+.tree-actions {
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  background: #eef2f6;
+  border: 0;
+}
+
+.tree-host {
+  padding: 4px 6px 8px;
+  background: #eef2f6;
+}
+
+.duct-tree-list {
+  list-style: none;
+  margin: 0;
+  padding-left: 16px;
+  display: grid;
+  gap: 4px;
+}
+
+.duct-tree-node {
+  display: grid;
+  gap: 4px;
+}
+
+.duct-tree-row {
+  display: grid;
+  grid-template-columns: 26px minmax(160px, 1fr) 80px auto auto auto;
+  gap: 6px;
+  align-items: center;
+}
+
+.tree-node-button,
+.tree-node-action {
+  min-height: 24px;
+  border: 1px solid #8b8b8b;
+  background: #e7e7e7;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.tree-node-button:disabled {
+  cursor: default;
+}
+
+.tree-node-action.remove {
+  color: #6b1510;
+}
+
+.tree-node-name,
+.tree-node-length {
+  height: 24px;
+  border: 1px solid #8c8c8c;
+  border-radius: 1px;
+  padding: 0 6px;
+  background: #fff;
+  font: inherit;
+}
+
+.tree-node-length {
+  text-align: right;
+}
+
+.tree-node-unit {
+  color: var(--quiet);
+  font-size: 0.78rem;
 }
 
 @media (min-width: 2200px) {

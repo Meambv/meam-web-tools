@@ -74,7 +74,16 @@ export const DEFAULTS = Object.freeze({
   restrictionHoleCount: magnetronFan.restriction.holeCount,
   restrictionHoleWidthMm: magnetronFan.restriction.holeWidthMm,
   restrictionHoleHeightMm: magnetronFan.restriction.holeHeightMm,
-  airflowTolerancePercent: 10
+  airflowTolerancePercent: 10,
+  ductTreeRoots: [
+    { id: "push-1", parentId: null, name: "Push Connection 1", kind: "push", lengthM: 0, collapsed: false },
+    { id: "push-2", parentId: null, name: "Push Connection 2", kind: "push", lengthM: 0, collapsed: false },
+    { id: "push-3", parentId: null, name: "Push Connection 3", kind: "push", lengthM: 0, collapsed: false },
+    { id: "extract-1", parentId: null, name: "Extraction Connection 1", kind: "extraction", lengthM: 0, collapsed: false },
+    { id: "extract-2", parentId: null, name: "Extraction Connection 2", kind: "extraction", lengthM: 0, collapsed: false },
+    { id: "extract-3", parentId: null, name: "Extraction Connection 3", kind: "extraction", lengthM: 0, collapsed: false },
+    { id: "extract-4", parentId: null, name: "Extraction Connection 4", kind: "extraction", lengthM: 0, collapsed: false }
+  ]
 });
 
 export const ACCESS_MESSAGES = Object.freeze({

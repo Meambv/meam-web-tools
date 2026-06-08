@@ -906,6 +906,45 @@
         </div>
         <ul class="warning-list" data-hx-warnings></ul>
       </section>
+
+      <section class="panel duct-tree-panel" aria-labelledby="duct-tree-title">
+        <div class="panel-header compact">
+          <h2 id="duct-tree-title">Duct Tree (Phase 10 Start)</h2>
+          <span class="panel-state">Expandable</span>
+        </div>
+        <div class="split-grid">
+          <div class="section-stack" aria-label="Push duct tree">
+            <div class="section-row">
+              <strong>Push connections (top)</strong>
+              <span><output data-duct-output="pushRootCount">0</output> roots</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Total push length *</strong>
+              <span><output data-duct-output="pushTotalLengthM">0</output> m</span>
+            </div>
+            <div class="tree-actions">
+              <button class="small-button" type="button" data-duct-expand="push">Expand all</button>
+              <button class="small-button" type="button" data-duct-collapse="push">Collapse all</button>
+            </div>
+            <div class="tree-host" data-duct-tree="push"></div>
+          </div>
+          <div class="section-stack" aria-label="Extraction duct tree">
+            <div class="section-row">
+              <strong>Extraction connections (bottom)</strong>
+              <span><output data-duct-output="extractionRootCount">0</output> roots</span>
+            </div>
+            <div class="section-row estimate-row">
+              <strong>Total extraction length *</strong>
+              <span><output data-duct-output="extractionTotalLengthM">0</output> m</span>
+            </div>
+            <div class="tree-actions">
+              <button class="small-button" type="button" data-duct-expand="extraction">Expand all</button>
+              <button class="small-button" type="button" data-duct-collapse="extraction">Collapse all</button>
+            </div>
+            <div class="tree-host" data-duct-tree="extraction"></div>
+          </div>
+        </div>
+      </section>
     </section>
   </main>
 
